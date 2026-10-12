@@ -1,0 +1,24 @@
+{
+  "approved_models": ["gpt-4o", "gpt-4o-mini", "claude-sonnet-5-5"],
+  "approved_email_domains": ["bank.example"],
+  "agents": [
+    {"id": "payments-ops", "name": "Payments", "department": "Operations", "owner": "Head of Payments Operations",
+     "allowed_tools": ["lookup_supplier", "sanctions_check", "human_approval", "release_payment"]},
+    {"id": "kyc-onboarding", "name": "KYC Onboarding", "department": "Onboarding", "owner": "Head of Client Onboarding",
+     "allowed_tools": ["read_document", "safety_filter", "id_verify"]},
+    {"id": "aml-alerts", "name": "AML Alerts", "department": "Financial Crime", "owner": "Head of AML Operations",
+     "allowed_tools": ["search_alerts", "write_case_note"]},
+    {"id": "client-complaints", "name": "Client Complaints", "department": "Consumer", "owner": "Head of Customer Care",
+     "allowed_tools": ["read_document", "safety_filter", "quality_check"]},
+    {"id": "trade-surveillance", "name": "Trade Surveillance", "department": "Markets", "owner": "Head of Markets Surveillance",
+     "allowed_tools": ["query_trades", "score_alert"]},
+    {"id": "treasury-recon", "name": "Treasury", "department": "Treasury", "owner": "Head of Treasury Operations",
+     "allowed_tools": ["match_ledger", "human_approval", "release_funds"]},
+    {"id": "contract-summariser", "name": "Contract Summariser", "department": "Legal", "owner": "Head of Legal Operations",
+     "allowed_tools": ["read_document", "safety_filter", "send_email"]},
+    {"id": "hr-policy", "name": "HR Policy Helper", "department": "HR", "owner": "Head of HR Services",
+     "allowed_tools": ["search_policy"]},
+    {"id": "code-review", "name": "Code Review Helper", "department": "Technology", "owner": "Head of Engineering Productivity",
+     "allowed_tools": ["get_code_diff", "post_review"]}
+  ]
+}

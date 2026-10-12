@@ -106,6 +106,7 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
 .more{font-size:12.5px;color:var(--ink-3);margin:8px 20px 0}
 .beam{position:absolute;left:0;right:0;top:0;height:40px;pointer-events:none;opacity:0;background:linear-gradient(180deg,rgba(0,189,242,0),rgba(0,189,242,.14) 70%,rgba(0,189,242,.6) 97%,rgba(0,189,242,0))}
 .beam.go{animation:sweep calc(2.4s*var(--slow)) linear forwards}
+.beam.loop{animation:sweep 1.6s linear infinite}
 .pattern-zone{position:relative;margin:14px 20px 18px;flex:1;min-height:122px}
 .pat-empty{position:absolute;inset:0;border:1.5px dashed #CBD5E2;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:13.5px;transition:opacity calc(.3s*var(--slow))}
 .pattern{position:absolute;inset:0;border:1px solid #F4C9C4;border-left:5px solid var(--red);border-radius:12px;padding:13px 16px;background:linear-gradient(180deg,#FFF5F4,#fff 80%);
@@ -186,6 +187,9 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
 .ans td:first-child{font-weight:650}
 .ans .r{color:var(--red)}
 .small{font-size:12.5px;color:var(--ink-3)}
+.blk ul{margin:4px 0 0 18px}
+.blk p+p{margin-top:6px}
+.src.off i{background:#C9D3E0;box-shadow:none;animation:none}
 .chat-input{margin:0 20px 18px;display:flex;align-items:center;gap:8px;border:1.5px solid #CFDDF0;border-radius:12px;padding:6px 6px 6px 14px;background:#fff;transition:border-color calc(.2s*var(--slow)),box-shadow calc(.2s*var(--slow))}
 .chat-input.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(5,109,174,.14)}
 .chat-input input{flex:1;min-width:0;font-size:14px;color:var(--ink)}
@@ -231,7 +235,7 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
     </div>
     <nav class="tabs"><a class="on">Overview</a><a>Agents</a><a>Alerts</a><a>Reports</a></nav>
     <div class="tb-right">
-      <span class="demo">Demo data</span>
+      <span class="demo" id="data-label">Demo data</span>
       <div class="bell"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V7a4 4 0 0 1 8 0v4l1.2 1.5H2.8z"/><path d="M6.5 14h3"/></svg><span class="count" id="bell">2</span></div>
       <div class="user"><div class="av">IA</div>Internal Audit</div>
     </div>
@@ -242,7 +246,7 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
       <div>
         <h1>AI agent monitoring</h1>
         <div class="lead">Telemetry Tracker checks every action taken by every AI agent, automatically.</div>
-        <div class="sources">Reads activity logs from
+        <div class="sources" id="sources">Reads activity logs from
           <span class="src"><i></i>OpenTelemetry</span><span class="src"><i></i>Langfuse</span><span class="src"><i></i>ARC / Agent Flow</span>
         </div>
       </div>
@@ -255,11 +259,11 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
     <section class="kpis">
       <div class="kpi">
         <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="5.5" width="10" height="7.5" rx="2"/><path d="M8 3v2.5M6 9h.01M10 9h.01"/></svg></div>
-        <div><div class="kpi-label">AI agents watched</div><div class="kpi-val">24</div><div class="kpi-sub">across 11 business areas</div></div>
+        <div><div class="kpi-label">AI agents watched</div><div class="kpi-val" id="k-agents">24</div><div class="kpi-sub" id="k-agents-sub">across 11 business areas</div></div>
       </div>
       <div class="kpi">
         <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.5l3 3 8-8"/></svg></div>
-        <div><div class="kpi-label">Actions checked today</div><div class="kpi-val" id="k-actions">1,183,904</div><div class="kpi-sub">every one, against the rules</div></div>
+        <div><div class="kpi-label" id="k-actions-label">Actions checked today</div><div class="kpi-val" id="k-actions">1,183,904</div><div class="kpi-sub" id="k-actions-sub">every one, against the rules</div></div>
       </div>
       <div class="kpi" id="k-flag-card">
         <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 14V2.5M3.5 3h8.5l-1.8 3 1.8 3H3.5"/></svg></div>
@@ -275,14 +279,14 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
           <div class="pill" id="all-status">Next check 09:41</div>
         </div>
         <div class="list" id="list"><div class="beam" id="beam"></div></div>
-        <div class="more">Showing 9 of 24 agents</div>
+        <div class="more" id="more">Showing 9 of 24 agents</div>
         <div class="pattern-zone">
           <div class="pat-empty" id="pat-empty">Problems shared by several agents will show here</div>
           <div class="pattern" id="pattern">
-            <span class="pat-tag">Same problem in 3 agents</span>
-            <div class="pat-title">Hidden instructions in uploaded files are tricking agents</div>
-            <div class="pat-desc">3 times more than usual. A known attack seen at other firms.</div>
-            <div class="pat-agents"><span class="ag">KYC Onboarding</span><span class="ag">Client Complaints</span><span class="ag">Contract Summariser</span></div>
+            <span class="pat-tag" id="pat-tag">Same problem in 3 agents</span>
+            <div class="pat-title" id="pat-title">Hidden instructions in uploaded files are tricking agents</div>
+            <div class="pat-desc" id="pat-desc">3 times more than usual. A known attack seen at other firms.</div>
+            <div class="pat-agents" id="pat-agents"><span class="ag">KYC Onboarding</span><span class="ag">Client Complaints</span><span class="ag">Contract Summariser</span></div>
           </div>
         </div>
       </div>
@@ -334,15 +338,21 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
      ?speed=0.5    play the walkthrough at half speed (about 30 s, easier to narrate)
      ?autoplay=0   wait for Space / Enter before starting the walkthrough
      ?record       used by scripts/record.cjs (no autoplay; the recorder calls startDemo)
-   Keys: Space/Enter = start, R = restart                                                  */
+     ?demo=1       force the scripted demo even when the Python server is running
+   Opened as a file, the page plays the scripted demo. Served by `python -m telemetry_tracker serve`,
+   it switches to live mode: real checks, real logs and the real Ask Telemetry agent.
+   Keys: Space/Enter = start the demo, R = restart                                          */
 const Q = new URLSearchParams(location.search);
 const SPEED = Math.max(0.05, parseFloat(Q.get('speed')) || 1);
 const RECORD = Q.has('record');
 const AUTOPLAY = !RECORD && Q.get('autoplay') !== '0';
+const CAN_GO_LIVE = location.protocol.startsWith('http') && !RECORD && Q.get('demo') !== '1';
+let LIVE = false;
 const SLOW = 1 / SPEED;
 document.documentElement.style.setProperty('--slow', SLOW);
 
 const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const app = $('#app');
 const after = (sec, fn) => setTimeout(fn, sec * 1000 * SLOW);
 
@@ -362,7 +372,7 @@ const ICON = { ok: TICK, bad: CROSS, warn: BANG };
 const PLAY = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>';
 
 /* ---------- Demo data ---------- */
-const AGENTS = [
+let AGENTS = [
   { id: 'pay',  name: 'Payments',            dept: 'Operations',      st: 'bad' },
   { id: 'kyc',  name: 'KYC Onboarding',      dept: 'Onboarding',      st: 'warn', pat: true },
   { id: 'aml',  name: 'AML Alerts',          dept: 'Financial Crime', st: 'ok' },
@@ -378,7 +388,7 @@ const LABEL = { ok: 'OK', warn: 'Watch', bad: 'Problem' };
 // For each agent: the events its own log recorded (time, event, detail), the rules
 // Telemetry Tracker tested against that log (result, rule, evidence), and the outcome.
 // A 'missing' event is not in the log; it marks where a rule expected one.
-const STORY = {
+let STORY = {
   pay: {
     actions: '182,000', source: 'Langfuse',
     log: [
@@ -497,12 +507,17 @@ function toast(title, body, life = 3) {
 
 /* ---------- All agents ---------- */
 const list = $('#list');
-list.insertAdjacentHTML('beforeend', AGENTS.map(a => `
-  <div class="row" data-id="${a.id}"><span class="nm">${a.name}</span><span class="dept">${a.dept}</span><span class="mark">!</span><span class="status">Waiting</span></div>`).join(''));
-const rowEl = id => list.querySelector(`[data-id="${id}"]`);
+function renderRows() {
+  list.querySelectorAll('.row').forEach(r => r.remove());
+  list.insertAdjacentHTML('beforeend', AGENTS.map(a => `
+    <div class="row" data-id="${esc(a.id)}"><span class="nm">${esc(a.name)}</span><span class="dept">${esc(a.dept)}</span><span class="mark">!</span><span class="status">Waiting</span></div>`).join(''));
+}
+renderRows();
+const rowEl = id => list.querySelector(`[data-id="${CSS.escape(id)}"]`);
 
 let checked = false;
 function runCheck() {
+  if (LIVE) return runCheckLive();
   if (checked) return;
   checked = true;
   const btn = $('#run-btn'), pill = $('#all-status');
@@ -535,6 +550,7 @@ function runCheck() {
 
 let patternShown = false;
 function showPattern() {
+  if (LIVE) return showPatternLive();
   if (patternShown) return;
   patternShown = true;
   AGENTS.filter(a => a.pat).forEach((a, i) => after(i * 0.12, () => rowEl(a.id).classList.add('pat')));
@@ -560,14 +576,15 @@ function showAgent(a) {
     warn: `<div class="v-auto"><span class="dot">${BANG}</span>Being watched. No auditor needed yet.</div>`,
     ok: '',
   }[a.st];
+  const meta = s.meta || `${a.dept} · ${s.actions} actions checked today`;
   box.innerHTML = `
-    <div class="one-name">${a.name} agent</div>
-    <div class="one-meta">${a.dept} · ${s.actions} actions checked today</div>
-    <div class="label">What the log shows<span>Latest run, from ${s.source}</span></div>
-    <div class="log">${s.log.map(([k, t, n, d]) => `<div class="ev ${k}"><span class="t">${t}</span><span class="n">${n}</span><span class="d">${d}</span></div>`).join('')}</div>
-    <div class="label">What Telemetry Tracker checked</div>
-    <div class="checks">${s.checks.map(([r, t, why]) => `<div class="ck" data-r="${r}"><span class="dot"><span class="spin" style="width:10px;height:10px"></span></span><span class="txt">${t}</span><span class="why">${why}</span></div>`).join('')}</div>
-    <div class="verdict ${a.st}"><div class="v-title">${s.title}</div>${s.rule ? `<div class="v-rule">${s.rule}</div>` : ''}${auto}</div>`;
+    <div class="one-name">${esc(a.name)} agent</div>
+    <div class="one-meta">${esc(meta)}</div>
+    <div class="label">What the log shows<span>${esc(s.when || 'Latest run')}, from ${esc(s.source)}</span></div>
+    <div class="log">${s.log.map(([k, t, n, d]) => `<div class="ev ${esc(k)}"><span class="t">${esc(t)}</span><span class="n">${esc(n)}</span><span class="d" title="${esc(d)}">${esc(d)}</span></div>`).join('')}</div>
+    <div class="label">What Telemetry Tracker checked${s.more ? `<span>+${s.more} more passed</span>` : ''}</div>
+    <div class="checks">${s.checks.map(([r, t, why]) => `<div class="ck" data-r="${esc(r)}"><span class="dot"><span class="spin" style="width:10px;height:10px"></span></span><span class="txt">${esc(t)}</span><span class="why">${esc(why)}</span></div>`).join('')}</div>
+    <div class="verdict ${esc(a.st)}"><div class="v-title">${esc(s.title)}</div>${s.rule ? `<div class="v-rule">${esc(s.rule)}</div>` : ''}${auto}</div>`;
   const evs = [...box.querySelectorAll('.ev')];
   evs.forEach((el, i) => after(0.15 + i * 0.16, live(() => el.classList.add('on'))));
   const cks = [...box.querySelectorAll('.ck')];
@@ -603,8 +620,6 @@ function scrollChat() {
     if (p < 1) requestAnimationFrame(step);
   })(t0);
 }
-const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
 function answerFor(q) {
   const s = q.toLowerCase();
   if (/approv|skip|sign/.test(s)) return [
@@ -637,6 +652,7 @@ function addMsg(cls, html) {
   return m;
 }
 function ask(q) {
+  if (LIVE) return askLive(q);
   const blocks = answerFor(q);
   addMsg('user', esc(q));
   const m = addMsg('ai', '<div class="who">TELEMETRY TRACKER</div><div class="thinking"><span class="spin"></span>Reading the logs...</div>');
@@ -658,7 +674,7 @@ $('#chat-in').addEventListener('blur', () => $('#chat-form').classList.remove('a
 
 /* ---------- Live action counter ---------- */
 let actions = 1183904;
-setInterval(() => { actions += 260 + ((actions * 7) % 190); $('#k-actions').textContent = actions.toLocaleString('en-GB'); }, 200 * SLOW);
+const ticker = setInterval(() => { actions += 260 + ((actions * 7) % 190); $('#k-actions').textContent = actions.toLocaleString('en-GB'); }, 200 * SLOW);
 
 /* ---------- Demo cursor ---------- */
 const cur = $('#cursor');
@@ -682,7 +698,7 @@ function typeInto(input, text, dur) {
 /* ---------- 15-second guided walkthrough ---------- */
 let started = false;
 function run() {
-  if (started) return;
+  if (started || LIVE) return;
   started = true;
   const question = 'Which agents skipped approvals this week?';
 
@@ -716,7 +732,144 @@ addEventListener('keydown', e => {
   if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); run(); }
 });
 window.startDemo = run;
-if (AUTOPLAY) (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => after(0.6, run));
+
+/* ---------- Live mode: the real agents, via the Python server ---------- */
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
+  return data;
+}
+
+let overview = null;
+function applyOverview(data) {
+  overview = data;
+  AGENTS = data.agents;
+  STORY = data.stories || {};
+  const k = data.kpis;
+  $('#k-agents').textContent = k.agents;
+  $('#k-agents-sub').textContent = k.agents_sub;
+  $('#k-actions-label').textContent = k.actions_label;
+  $('#k-actions').textContent = Number(k.actions).toLocaleString('en-GB');
+  $('#k-actions-sub').textContent = k.actions_sub;
+  $('#k-flag').textContent = k.flagged ?? '-';
+  $('#k-flag-sub').textContent = k.flagged_sub;
+  $('#k-flag-card').classList.toggle('alert', !!k.flagged);
+  $('#more').textContent = data.more || '';
+  $('#data-label').textContent = data.data_label || 'Live data';
+  const llmOff = /^offline/.test(data.llm);
+  $('#sources').innerHTML = 'Reads activity logs from ' +
+    data.sources.map(src => `<span class="src"><i></i>${esc(src)}</span>`).join('') +
+    `<span class="src${llmOff ? ' off' : ''}" title="${esc(data.llm)}"><i></i>AI checks: ${esc(llmOff ? 'offline' : data.llm.split(' via ')[0])}</span>`;
+}
+
+async function goLive() {
+  const data = await api('/api/overview');
+  LIVE = true;
+  clearInterval(ticker);
+  applyOverview(data);
+  renderRows();
+  $('#last').innerHTML = 'Not checked yet';
+  $('#all-status').textContent = 'Ready';
+  $('#pat-empty').textContent = 'Problems shared by several agents will show here';
+  chat.querySelector('.msg.ai').lastChild.textContent =
+    'Ask me anything about your AI agents. I read their logs and show the evidence.';
+  $('#suggest').innerHTML = ['What needs my attention today?', 'Which agents skipped approvals this week?',
+    'Why is this happening to several agents?'].map(q => `<button>${q}</button>`).join('');
+}
+
+let checking = false;
+async function runCheckLive() {
+  if (checking) return;
+  checking = true;
+  const btn = $('#run-btn'), pill = $('#all-status');
+  btn.classList.add('busy');
+  btn.innerHTML = '<span class="spin"></span>Checking...';
+  pill.className = 'pill busy';
+  pill.innerHTML = '<span class="spin"></span>Checking all agents';
+  $('#beam').className = 'beam loop';
+  list.querySelectorAll('.row').forEach(r => { r.className = 'row checking'; r.querySelector('.status').textContent = 'Checking'; });
+  try {
+    const data = await api('/api/check', {});
+    applyOverview(data);
+    renderRows();
+    AGENTS.forEach((a, i) => after(i * 0.12, () => {
+      const r = rowEl(a.id);
+      r.classList.add(a.st);
+      r.querySelector('.status').textContent = LABEL[a.st];
+    }));
+    after(AGENTS.length * 0.12 + 0.2, () => {
+      pill.className = 'pill ok';
+      pill.innerHTML = TICK + 'Checked just now';
+      $('#last').innerHTML = 'Last check <b>just now</b>';
+      const k = data.kpis;
+      toast('Check complete', `${Number(k.actions).toLocaleString('en-GB')} actions checked. ${k.flagged} agent${k.flagged === 1 ? '' : 's'} need an auditor.`);
+      if (data.judge && data.judge.note) toast('AI checks ran offline', data.judge.note, 6);
+      showPatternLive();
+    });
+  } catch (e) {
+    pill.className = 'pill';
+    pill.textContent = 'Check failed';
+    toast('Check failed', e.message, 6);
+  } finally {
+    $('#beam').className = 'beam';
+    btn.classList.remove('busy');
+    btn.innerHTML = PLAY + 'Check now';
+    checking = false;
+  }
+}
+
+function showPatternLive() {
+  const p = overview && overview.pattern;
+  list.querySelectorAll('.row').forEach(r => r.classList.remove('pat'));
+  if (!p) {
+    $('#pattern').classList.remove('show');
+    $('#pat-empty').style.opacity = 1;
+    $('#pat-empty').textContent = 'No problem shared by several agents this week';
+    return;
+  }
+  $('#pat-tag').textContent = p.tag;
+  $('#pat-title').textContent = p.title;
+  $('#pat-desc').textContent = p.desc;
+  $('#pat-agents').innerHTML = p.agents.map(n => `<span class="ag">${esc(n)}</span>`).join('');
+  AGENTS.filter(a => a.pat).forEach((a, i) => after(i * 0.12, () => rowEl(a.id).classList.add('pat')));
+  after(0.25, () => { $('#pat-empty').style.opacity = 0; $('#pattern').classList.add('show'); });
+}
+
+// Answers come back as light markdown: **bold**, "- " bullets and blank-line paragraphs.
+function md(text) {
+  return esc(text).split(/\n{2,}/).map(par => {
+    const lines = par.split('\n');
+    const html = l => l.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    if (lines.every(l => /^\s*[-*] /.test(l))) return `<ul>${lines.map(l => `<li>${html(l.replace(/^\s*[-*] /, ''))}</li>`).join('')}</ul>`;
+    return `<p>${lines.map(html).join('<br>')}</p>`;
+  }).join('');
+}
+
+let conversationId = null;
+async function askLive(q) {
+  addMsg('user', esc(q));
+  const m = addMsg('ai', '<div class="who">TELEMETRY TRACKER</div><div class="thinking"><span class="spin"></span>Reading the logs...</div>');
+  try {
+    const r = await api('/api/ask', { question: q, conversation_id: conversationId });
+    conversationId = r.conversation_id || conversationId;
+    m.querySelector('.thinking').remove();
+    m.insertAdjacentHTML('beforeend', `<div class="blk">${md(r.answer)}</div>`);
+  } catch (e) {
+    m.querySelector('.thinking').remove();
+    m.insertAdjacentHTML('beforeend', `<div class="blk">${esc(e.message)}</div>`);
+  }
+  scrollChat();
+}
+
+(async () => {
+  if (CAN_GO_LIVE) {
+    try { await goLive(); } catch (e) { /* no server: stay in demo mode */ }
+  }
+  if (AUTOPLAY && !LIVE) (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => after(0.6, run));
+})();
 })();
 </script>
 </body>

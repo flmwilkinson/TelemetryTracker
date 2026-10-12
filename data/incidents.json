@@ -1,0 +1,30 @@
+[
+  {
+    "id": "OWASP-LLM01",
+    "name": "OWASP LLM01: Prompt injection",
+    "source": "OWASP Top 10 for LLM Applications 2025",
+    "summary": "Text the model reads (including documents, emails or web pages supplied by outsiders) contains instructions that change what the AI does. Indirect injection hides the instructions in content the AI processes rather than in the user's request.",
+    "related_rules": ["AI-SEC-03"]
+  },
+  {
+    "id": "MITRE-ATLAS-AML.T0051",
+    "name": "MITRE ATLAS AML.T0051: LLM prompt injection",
+    "source": "MITRE ATLAS",
+    "summary": "Adversaries craft inputs that cause a language model to ignore its instructions or take unintended actions, including through content the model retrieves or is given.",
+    "related_rules": ["AI-SEC-03"]
+  },
+  {
+    "id": "OWASP-LLM02",
+    "name": "OWASP LLM02: Sensitive information disclosure",
+    "source": "OWASP Top 10 for LLM Applications 2025",
+    "summary": "An AI application reveals confidential data, such as customer or contract information, to people who should not see it.",
+    "related_rules": ["DLP-11"]
+  },
+  {
+    "id": "OWASP-LLM06",
+    "name": "OWASP LLM06: Excessive agency",
+    "source": "OWASP Top 10 for LLM Applications 2025",
+    "summary": "An AI agent is given more autonomy, permissions or functions than it needs, so it can take impactful actions (such as moving money) without the checks a person would apply.",
+    "related_rules": ["APPROVAL", "TOOLS-01"]
+  }
+]
