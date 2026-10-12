@@ -125,34 +125,46 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
 .one{padding:0 20px 18px;display:flex;flex-direction:column;min-height:0;animation:fadeUp calc(.3s*var(--slow)) ease-out}
 .one-name{font-size:19px;font-weight:750}
 .one-meta{font-size:13px;color:var(--ink-3);margin-top:2px}
-.label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin:16px 0 8px}
-.steps{position:relative}
-.step{position:relative;display:flex;align-items:center;gap:12px;height:38px;padding:0 10px;border-radius:8px;opacity:0;transform:translateX(-8px);transition:opacity calc(.25s*var(--slow)),transform calc(.25s*var(--slow))}
-.step.on{opacity:1;transform:none}
-.step:not(:last-child)::after{content:"";position:absolute;left:21px;top:29px;height:18px;width:2px;background:var(--line)}
-.step .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--ok);flex:none;z-index:1}
-.step .txt{font-size:14.5px;color:var(--ink)}
-.step.bad{background:var(--bad-bg)}
-.step.bad .dot{background:var(--red)}
-.step.bad .txt{color:var(--red);font-weight:700}
-.step.warn .dot{background:var(--amber)}
-.step.warn .txt{color:var(--warn);font-weight:650}
-.verdict{margin-top:14px;border-radius:12px;padding:14px 16px;border:1px solid #F4C9C4;border-left:5px solid var(--red);background:#FFF7F6;
+.label{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin:12px 0 5px}
+.label span{font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+/* What the log shows: the agent's own events, as recorded */
+.log{border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.ev{display:flex;align-items:center;gap:12px;height:28px;padding:0 12px;border-top:1px solid var(--line-2);opacity:0;transition:opacity calc(.2s*var(--slow))}
+.ev:first-child{border-top:0}
+.ev.on{opacity:1}
+.ev .t{width:58px;flex:none;font-family:ui-monospace,Consolas,"Liberation Mono",monospace;font-size:12px;color:var(--ink-3)}
+.ev .n{width:142px;flex:none;font-family:ui-monospace,Consolas,"Liberation Mono",monospace;font-size:12.5px;color:var(--blue)}
+.ev .d{flex:1;min-width:0;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.bad{background:var(--bad-bg)}
+.ev.bad .n,.ev.bad .d{color:var(--red);font-weight:650}
+.ev.warn{background:#FFF8EA}
+.ev.warn .n,.ev.warn .d{color:var(--warn);font-weight:650}
+.ev.missing{background:#FFF7F6;box-shadow:inset 0 0 0 1.5px var(--red);border-radius:6px;margin:2px 4px;border-top:0;height:26px}
+.ev.missing .n,.ev.missing .d{color:var(--red);font-weight:700}
+/* What Telemetry Tracker checked: each rule tested against the log */
+.ck{display:flex;align-items:center;gap:10px;height:27px;opacity:0;transition:opacity calc(.2s*var(--slow))}
+.ck.on{opacity:1}
+.ck .dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;background:#C9D3E0;flex:none;transition:background calc(.2s*var(--slow))}
+.ck.ok .dot{background:var(--ok)}
+.ck.bad .dot{background:var(--red)}
+.ck.warn .dot{background:var(--amber)}
+.ck .txt{font-size:14px;color:var(--ink)}
+.ck .why{margin-left:auto;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.ck.bad .txt,.ck.bad .why{color:var(--red);font-weight:650}
+.ck.warn .txt,.ck.warn .why{color:var(--warn);font-weight:650}
+.verdict{flex:none;margin-top:10px;border-radius:12px;padding:11px 16px;border:1px solid #F4C9C4;border-left:5px solid var(--red);background:#FFF7F6;
   opacity:0;transform:translateY(8px);transition:opacity calc(.35s*var(--slow)),transform calc(.35s*var(--slow)) cubic-bezier(.2,.8,.2,1)}
 .verdict.show{opacity:1;transform:none}
 .verdict.warn{border-color:#F5D9A6;border-left-color:var(--amber);background:#FFFAF0}
 .verdict.ok{border-color:#BFE6D2;border-left-color:var(--ok);background:#F3FBF7}
-.v-kind{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
-.verdict.warn .v-kind{color:var(--warn)}
-.verdict.ok .v-kind{color:var(--ok)}
-.v-title{font-size:17px;font-weight:750;margin-top:4px;line-height:1.3}
+.v-title{font-size:16.5px;font-weight:750;line-height:1.3}
 .v-rule{font-size:13.5px;color:var(--ink-2);margin-top:3px}
-.v-auto{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid rgba(218,41,28,.15);font-size:14px;font-weight:650;color:var(--ok);opacity:0;transition:opacity calc(.3s*var(--slow))}
+.v-auto{display:flex;align-items:center;gap:9px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(218,41,28,.15);font-size:14px;font-weight:650;color:var(--ok);opacity:0;transition:opacity calc(.3s*var(--slow))}
 .verdict.warn .v-auto{border-top-color:rgba(232,155,26,.25);color:var(--warn)}
 .v-auto.show{opacity:1}
 .v-auto .dot{width:22px;height:22px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center}
 .verdict.warn .v-auto .dot{background:var(--amber)}
-.v-auto span{font-weight:500;color:var(--ink-3);margin-left:auto;font-size:12.5px}
+.v-auto span:not(.dot){font-weight:500;color:var(--ink-3);margin-left:auto;font-size:12.5px}
 
 /* Ask */
 .ai-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--navy));display:grid;place-items:center;flex:none}
@@ -247,7 +259,7 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
       </div>
       <div class="kpi">
         <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.5l3 3 8-8"/></svg></div>
-        <div><div class="kpi-label">Actions checked today</div><div class="kpi-val" id="k-actions">1,183,904</div><div class="kpi-sub">every single one, automatically</div></div>
+        <div><div class="kpi-label">Actions checked today</div><div class="kpi-val" id="k-actions">1,183,904</div><div class="kpi-sub">every one, against the rules</div></div>
       </div>
       <div class="kpi" id="k-flag-card">
         <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 14V2.5M3.5 3h8.5l-1.8 3 1.8 3H3.5"/></svg></div>
@@ -278,13 +290,13 @@ h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
       <!-- Single agent -->
       <div class="panel" id="p-one">
         <div class="panel-head">
-          <div><div class="ptitle">One agent</div><div class="psub">What it did, step by step</div></div>
+          <div><div class="ptitle">One agent</div><div class="psub">Its activity log, checked against the rules</div></div>
           <div class="pill" id="one-status">Pick an agent</div>
         </div>
         <div class="empty" id="empty">
           <div class="big"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8392A8" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="14" cy="18" r="2"/></svg></div>
           <b>Click an agent to see what it did</b>
-          <span>Telemetry Tracker replays each decision and checks it against the rules.</span>
+          <span>Telemetry Tracker shows its activity log and checks it against the rules.</span>
         </div>
         <div class="one" id="one" hidden></div>
       </div>
@@ -363,71 +375,114 @@ const AGENTS = [
 ];
 const LABEL = { ok: 'OK', warn: 'Watch', bad: 'Problem' };
 
-// What each agent did, in plain English, and what Telemetry Tracker concluded.
+// For each agent: the events its own log recorded (time, event, detail), the rules
+// Telemetry Tracker tested against that log (result, rule, evidence), and the outcome.
+// A 'missing' event is not in the log; it marks where a rule expected one.
 const STORY = {
   pay: {
-    actions: '182,000', steps: [
-      ['ok', 'Got a request to pay a supplier invoice'],
-      ['ok', "Looked up the supplier's bank details"],
-      ['ok', 'Checked the supplier against the sanctions list'],
-      ['bad', 'Skipped the manager approval step'],
-      ['bad', 'Sent a $2.4M payment'],
+    actions: '182,000', source: 'Langfuse',
+    log: [
+      ['ok', '09:41:01', 'user_request', '"Pay invoice INV-88213"'],
+      ['ok', '09:41:02', 'ai_model', 'Decided to pay it in full'],
+      ['ok', '09:41:02', 'lookup_supplier', 'Northwind Ltd, account 4471'],
+      ['ok', '09:41:03', 'sanctions_check', 'Result: clear'],
+      ['missing', '', 'human_approval', 'Expected here, not in the log'],
+      ['bad', '09:41:04', 'release_payment', '$2,400,000 to Northwind Ltd'],
     ],
-    title: '$2.4M sent without manager approval',
-    rule: 'Rule: payments over $1M need a second person to approve them.',
+    checks: [
+      ['ok', 'Supplier screened before paying', 'sanctions_check at 09:41:03'],
+      ['bad', 'Over $1M approved by a person', 'no approval in the log'],
+      ['ok', 'Only approved tools used', '3 of 3 on the list'],
+    ],
+    title: '$2.4M paid without a person approving it',
   },
   try: {
-    actions: '64,000', steps: [
-      ['ok', 'Matched 412 ledger entries'],
-      ['ok', 'Found a $450k difference'],
-      ['bad', 'Approval step was optional, so it skipped it'],
-      ['bad', 'Released $450k to close the gap'],
+    actions: '64,000', source: 'ARC / Agent Flow',
+    log: [
+      ['ok', '10:12:07', 'user_request', '"Reconcile account for 11 Oct"'],
+      ['ok', '10:12:08', 'match_ledger', '412 entries, $450k difference'],
+      ['ok', '10:12:09', 'ai_model', 'Decided to release the difference'],
+      ['missing', '', 'human_approval', 'Expected here, not in the log'],
+      ['bad', '10:12:11', 'release_funds', '$450,000 to suspense account'],
     ],
-    title: '$450k released without sign-off',
-    rule: 'Rule: releasing funds needs a second person to approve.',
+    checks: [
+      ['ok', 'Amount matches the gap found', '$450,000 = $450,000'],
+      ['bad', 'Release approved by a person', 'no approval in the log'],
+      ['ok', 'Only approved tools used', '2 of 2 on the list'],
+    ],
+    title: '$450k released without a person approving it',
   },
   ctr: {
-    actions: '31,000', steps: [
-      ['ok', 'Opened a contract uploaded by a client'],
-      ['bad', 'Found hidden text telling it to email the file'],
-      ['bad', 'Followed the hidden instruction'],
-      ['bad', 'Emailed contract terms to an outside address'],
+    actions: '31,000', source: 'OpenTelemetry',
+    log: [
+      ['ok', '14:03:22', 'user_request', '"Summarise this contract"'],
+      ['ok', '14:03:22', 'read_document', 'client_upload.pdf, 14 pages'],
+      ['bad', '14:03:25', 'ai_model', 'Reply asks to email the file'],
+      ['bad', '14:03:26', 'send_email', 'To an address outside the bank'],
+    ],
+    checks: [
+      ['bad', 'Files checked for hidden text', 'hidden text on page 9'],
+      ['bad', 'Emails only to bank addresses', 'sent outside at 14:03:26'],
+      ['ok', 'Only approved AI model used', 'gpt-4o, approved'],
     ],
     title: 'Contract terms emailed outside the bank',
-    rule: 'Rule: agents must never follow instructions hidden in documents.',
   },
   kyc: {
-    actions: '96,000', steps: [
-      ['ok', "Read a customer's ID document"],
-      ['warn', 'Found hidden instructions in the file'],
-      ['ok', 'Safety filter blocked them'],
-      ['ok', 'Finished the check as normal'],
+    actions: '96,000', source: 'Langfuse',
+    log: [
+      ['ok', '11:20:14', 'user_request', '"Verify new customer ID"'],
+      ['ok', '11:20:15', 'read_document', 'passport_scan.pdf'],
+      ['warn', '11:20:16', 'safety_filter', 'Blocked a hidden instruction'],
+      ['ok', '11:20:18', 'id_verify', 'Result: verified'],
+    ],
+    checks: [
+      ['warn', 'Files checked for hidden text', 'found and blocked'],
+      ['ok', 'Customer data stayed inside', 'no outside sends'],
+      ['ok', 'Only approved tools used', '2 of 2 on the list'],
     ],
     title: 'Attack blocked, but part of a wider pattern',
-    rule: 'The same trick is showing up in other agents.',
   },
   cmp: {
-    actions: '77,000', steps: [
-      ['ok', 'Read a complaint and its attachment'],
-      ['warn', 'Attachment had hidden instructions'],
-      ['warn', 'The tone of the reply changed slightly'],
-      ['ok', 'Reply was checked before sending'],
+    actions: '77,000', source: 'Langfuse',
+    log: [
+      ['ok', '13:45:02', 'user_request', '"Draft reply to complaint 55120"'],
+      ['ok', '13:45:03', 'read_document', 'customer_letter.docx'],
+      ['warn', '13:45:05', 'ai_model', 'Reply tone changed by hidden text'],
+      ['ok', '13:45:06', 'quality_check', 'Reply passed review'],
     ],
-    title: 'Hidden instructions changed a reply',
-    rule: 'No harm done, but part of a wider pattern.',
+    checks: [
+      ['warn', 'Files checked for hidden text', 'found, not blocked'],
+      ['ok', 'Reply reviewed before sending', 'quality_check at 13:45:06'],
+      ['ok', 'Customer data stayed inside', 'no outside sends'],
+    ],
+    title: 'Hidden text changed a reply, no harm done',
   },
 };
-const ACTIONS = { aml: '141,000', trd: '203,000', hr: '44,000', code: '167,000' };
-const okStory = a => ({
-  actions: ACTIONS[a.id], steps: [
-    ['ok', 'Got a request from ' + a.dept],
-    ['ok', 'Looked up the information it needed'],
-    ['ok', 'Wrote its answer'],
-    ['ok', 'Answer passed the safety check'],
-  ],
-  title: 'No problems found',
-  rule: 'Every rule passed. Checked again every 15 minutes.',
-});
+const OK_AGENTS = {
+  aml:  { actions: '141,000', tool: 'search_alerts',  ask: '"Triage alert 7731"',          did: '38 related alerts found' },
+  trd:  { actions: '203,000', tool: 'query_trades',   ask: '"Review trades for desk 4"',   did: '1,204 trades returned' },
+  hr:   { actions: '44,000',  tool: 'search_policy',  ask: '"How much parental leave?"',   did: '2 policy pages found' },
+  code: { actions: '167,000', tool: 'get_code_diff',  ask: '"Review pull request 912"',    did: '14 files changed' },
+};
+const okStory = a => {
+  const o = OK_AGENTS[a.id];
+  return {
+    actions: o.actions, source: 'OpenTelemetry',
+    log: [
+      ['ok', '09:38:11', 'user_request', o.ask],
+      ['ok', '09:38:12', 'ai_model', 'Planned the task'],
+      ['ok', '09:38:12', o.tool, o.did],
+      ['ok', '09:38:14', 'safety_filter', 'Answer passed'],
+    ],
+    checks: [
+      ['ok', 'Only approved tools used', '1 of 1 on the list'],
+      ['ok', 'Customer data stayed inside', 'no outside sends'],
+      ['ok', 'Answer passed the safety check', 'safety_filter at 09:38:14'],
+    ],
+    title: 'No problems found',
+    rule: 'Every rule passed. Checked again every 15 minutes.',
+  };
+};
 
 /* ---------- Toasts ---------- */
 function bump(el) { el.classList.add('bump'); after(0.25, () => el.classList.remove('bump')); }
@@ -500,7 +555,6 @@ function showAgent(a) {
   const box = $('#one');
   box.hidden = false;
   box.style.animation = 'none'; void box.offsetWidth; box.style.animation = '';
-  const kind = { bad: 'Broke a rule', warn: 'Worth watching', ok: 'All clear' }[a.st];
   const auto = {
     bad: `<div class="v-auto"><span class="dot">${TICK}</span>Sent to the audit team automatically<span>evidence attached</span></div>`,
     warn: `<div class="v-auto"><span class="dot">${BANG}</span>Being watched. No auditor needed yet.</div>`,
@@ -509,12 +563,20 @@ function showAgent(a) {
   box.innerHTML = `
     <div class="one-name">${a.name} agent</div>
     <div class="one-meta">${a.dept} · ${s.actions} actions checked today</div>
-    <div class="label">What it did</div>
-    <div class="steps">${s.steps.map(([r, t]) => `<div class="step ${r}"><span class="dot">${ICON[r]}</span><span class="txt">${t}</span></div>`).join('')}</div>
-    <div class="verdict ${a.st}"><div class="v-kind">${kind}</div><div class="v-title">${s.title}</div><div class="v-rule">${s.rule}</div>${auto}</div>`;
-  const steps = [...box.querySelectorAll('.step')];
-  steps.forEach((el, i) => after(0.15 + i * 0.28, live(() => el.classList.add('on'))));
-  const tv = 0.15 + steps.length * 0.28;
+    <div class="label">What the log shows<span>Latest run, from ${s.source}</span></div>
+    <div class="log">${s.log.map(([k, t, n, d]) => `<div class="ev ${k}"><span class="t">${t}</span><span class="n">${n}</span><span class="d">${d}</span></div>`).join('')}</div>
+    <div class="label">What Telemetry Tracker checked</div>
+    <div class="checks">${s.checks.map(([r, t, why]) => `<div class="ck" data-r="${r}"><span class="dot"><span class="spin" style="width:10px;height:10px"></span></span><span class="txt">${t}</span><span class="why">${why}</span></div>`).join('')}</div>
+    <div class="verdict ${a.st}"><div class="v-title">${s.title}</div>${s.rule ? `<div class="v-rule">${s.rule}</div>` : ''}${auto}</div>`;
+  const evs = [...box.querySelectorAll('.ev')];
+  evs.forEach((el, i) => after(0.15 + i * 0.16, live(() => el.classList.add('on'))));
+  const cks = [...box.querySelectorAll('.ck')];
+  const tc = 0.25 + evs.length * 0.16;
+  cks.forEach((el, i) => {
+    after(tc + i * 0.22, live(() => el.classList.add('on')));
+    after(tc + i * 0.22 + 0.15, live(() => { el.classList.add(el.dataset.r); el.querySelector('.dot').innerHTML = ICON[el.dataset.r]; }));
+  });
+  const tv = tc + cks.length * 0.22 + 0.1;
   after(tv, live(() => {
     box.querySelector('.verdict').classList.add('show');
     pill.className = 'pill ' + a.st;

@@ -31,13 +31,26 @@ Recorded videos, for slides or as a backup:
 1. **Check now.** Every action by every agent is checked. Over 1 million actions, only 3 need an auditor.
 2. **Same problem in 3 agents.** Hidden instructions in uploaded files are tricking agents. You would
    not spot this from one agent alone.
-3. **One agent.** The Payments agent skipped manager approval and sent $2.4M. It went to the audit
-   team automatically, with evidence.
+3. **One agent.** The Payments agent's own log shows it checked sanctions and then released $2.4M.
+   Telemetry Tracker tests that log against the rules and finds no human approval before the payment.
+   It goes to the audit team automatically, with the log as evidence.
 4. **Ask a question.** "Which agents skipped approvals this week?" Two agents, same cause, one fix.
 
 **Voiceover:** "Our AI agents take over a million actions a day. Telemetry Tracker checks every one of
 them, automatically. It spots problems spreading across agents, shows exactly what went wrong, and only
 sends auditors the few things that matter. And you can just ask it."
+
+## How the checks work
+
+Agent platforms already log every step an agent takes: each AI model call and each tool it uses
+(for example `sanctions_check` or `release_payment`), with the inputs, outputs and timestamps.
+Telemetry Tracker reads those logs and tests them against rules such as "a payment over $1M must
+have a human approval before it is released". A log can only show what happened, so a skipped step
+is found by its absence: the rule expects an approval event and there is none.
+
+Clear-cut rules like this can run on every action cheaply. Checks that need judgement, such as
+spotting hidden instructions in a document, would use an AI model and in practice run on the
+riskier actions rather than every single one.
 
 ## Branding
 
