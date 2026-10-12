@@ -1,0 +1,13 @@
+{
+  "name": "telemetry-tracker-demo",
+  "version": "0.9.0",
+  "private": true,
+  "description": "Front-end demo of Telemetry Tracker: continuous assurance over AI agents from OpenTelemetry / Langfuse / Agent Flow telemetry",
+  "scripts": {
+    "start": "npx --yes serve -l 4173 .",
+    "record": "node scripts/record.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
