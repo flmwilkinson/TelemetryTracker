@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Telemetry Tracker | AI Agent Assurance</title>
+<title>Telemetry Tracker | AI Agent Monitoring</title>
 <style>
 :root{
-  --navy:#002D72; --navy-deep:#001A45; --blue:#056DAE; --sky:#00BDF2; --red:#DA291C;
+  --navy:#002D72; --blue:#056DAE; --sky:#00BDF2; --red:#DA291C;
   --ink:#0B1F3A; --ink-2:#44546C; --ink-3:#8392A8; --line:#E1E7EF; --line-2:#EEF2F6; --bg:#F0F3F8; --tint:#F6F9FC;
-  --ok:#0F8A57; --ok-bg:#E2F4EB; --warn:#B86E00; --warn-bg:#FFF1D6; --amber:#E89B1A; --bad:#DA291C; --bad-bg:#FDE9E7;
-  --mono:ui-monospace,"Cascadia Mono",Consolas,"Liberation Mono","DejaVu Sans Mono",monospace;
+  --ok:#0F8A57; --ok-bg:#E2F4EB; --warn:#B86E00; --warn-bg:#FFF1D6; --amber:#E89B1A; --bad-bg:#FDECEA;
   --slow:1;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,285 +20,174 @@ svg{display:block;flex:none}
 [hidden]{display:none!important}
 
 /* The app is laid out at a 1600px design width and scaled to fill the window */
-#app{position:absolute;left:0;top:0;transform-origin:0 0;display:grid;grid-template-columns:204px 1fr;grid-template-rows:56px 1fr;background:var(--bg)}
+#app{position:absolute;left:0;top:0;transform-origin:0 0;display:flex;flex-direction:column;background:var(--bg)}
 
-/* ---------- Top app bar ---------- */
-.topbar{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:0 18px 0 16px;color:#fff;background:var(--navy);position:relative;z-index:5}
+/* ---------- Top bar ---------- */
+.topbar{height:60px;flex:none;display:flex;align-items:center;gap:28px;padding:0 24px;color:#fff;background:var(--navy);position:relative}
 .topbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,var(--sky),var(--blue) 35%,rgba(5,109,174,0) 80%)}
-.brand{display:flex;align-items:center;gap:11px;width:400px}
+.brand{display:flex;align-items:center;gap:11px}
 .org-logo{height:24px;width:auto}
-.logo{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
-.brand-name{font-size:16.5px;font-weight:700;letter-spacing:-.01em}
-.brand-div{width:1px;height:22px;background:rgba(255,255,255,.25)}
-.brand-sub{font-size:12.5px;color:#A9D9F5;font-weight:500}
-.search{flex:1;max-width:520px;display:flex;align-items:center;gap:9px;height:34px;padding:0 10px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.6);font-size:13px}
-.search kbd{margin-left:auto;font-family:var(--mono);font-size:10.5px;border:1px solid rgba(255,255,255,.25);border-radius:4px;padding:0 5px;color:rgba(255,255,255,.55)}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:16px}
-.env{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:5px;background:rgba(0,189,242,.16);color:#9BE3FF;border:1px solid rgba(0,189,242,.35)}
-.tb-icon{position:relative;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:rgba(255,255,255,.85)}
-.tb-icon .count{position:absolute;top:2px;right:1px;min-width:16px;height:16px;border-radius:8px;padding:0 4px;background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;border:2px solid var(--navy);transition:transform calc(.25s*var(--slow))}
-.tb-icon .count.bump{transform:scale(1.3)}
-.user{display:flex;align-items:center;gap:9px;font-size:12.5px}
-.user .av{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:11.5px}
-.user b{display:block;font-weight:650;font-size:12.5px}
-.user span{font-size:11px;color:rgba(255,255,255,.6)}
+.logo{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
+.brand-name{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.brand-sub{font-size:13px;color:#A9D9F5;padding-left:12px;border-left:1px solid rgba(255,255,255,.25)}
+.tabs{display:flex;gap:4px;margin-left:24px;height:100%}
+.tabs a{display:flex;align-items:center;padding:0 14px;font-size:14px;font-weight:600;color:rgba(255,255,255,.7);position:relative;cursor:pointer}
+.tabs a.on{color:#fff}
+.tabs a.on::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--sky)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:16px;font-size:13px}
+.demo{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:5px;background:rgba(0,189,242,.16);color:#9BE3FF;border:1px solid rgba(0,189,242,.35)}
+.bell{position:relative;width:34px;height:34px;display:grid;place-items:center;color:rgba(255,255,255,.85)}
+.bell .count{position:absolute;top:3px;right:2px;min-width:17px;height:17px;border-radius:9px;padding:0 4px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center;border:2px solid var(--navy);transition:transform calc(.25s*var(--slow))}
+.bell .count.bump{transform:scale(1.3)}
+.user{display:flex;align-items:center;gap:10px}
+.user .av{width:32px;height:32px;border-radius:50%;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:12px}
 
-/* ---------- Sidebar ---------- */
-.sidebar{background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px 12px;min-height:0}
-.nav-sec{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--ink-3);padding:12px 10px 6px}
-.nav-sec:first-child{padding-top:2px}
-.nav a{display:flex;align-items:center;gap:10px;height:33px;padding:0 10px;border-radius:8px;font-size:13px;font-weight:550;color:var(--ink-2);text-decoration:none;cursor:pointer}
-.nav a:hover{background:var(--tint)}
-.nav a svg{color:var(--ink-3)}
-.nav a.on{background:#E8F1FA;color:var(--navy);font-weight:700}
-.nav a.on svg{color:var(--blue)}
-.nav .badge{margin-left:auto;font-size:10.5px;font-weight:800;min-width:20px;height:18px;border-radius:9px;padding:0 6px;display:grid;place-items:center;background:var(--line-2);color:var(--ink-2);transition:transform calc(.25s*var(--slow))}
-.nav .badge.red{background:var(--red);color:#fff}
-.nav .badge.bump{transform:scale(1.25)}
-.nav .new{margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);background:#E8F4FB;border-radius:4px;padding:1px 5px}
-.sources{margin-top:auto;border:1px solid var(--line);border-radius:10px;padding:10px 10px 6px;background:var(--tint)}
-.sources-h{display:flex;font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--ink-3);margin-bottom:6px}
-.sources-h span{margin-left:auto;letter-spacing:.04em}
-.src{display:flex;align-items:center;gap:8px;height:24px;font-size:12px;font-weight:600;color:var(--ink)}
-.src .dot{width:7px;height:7px;border-radius:50%;background:#2BC48A;box-shadow:0 0 0 3px rgba(43,196,138,.18);animation:breathe calc(2s*var(--slow)) ease-in-out infinite}
-.src em{margin-left:auto;font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--ink-2)}
-.src em.low{color:var(--warn);font-weight:700}
-
-/* ---------- Main ---------- */
-.main{display:flex;flex-direction:column;min-width:0;min-height:0}
-.page{flex:1;display:flex;flex-direction:column;gap:14px;padding:16px 20px 14px;min-height:0}
-.page-head{display:flex;align-items:flex-end;gap:16px}
-.crumbs{font-size:12px;color:var(--ink-3);display:flex;gap:6px}
-.crumbs span{color:#B5C1D1}
-h1{font-size:22px;font-weight:750;color:var(--navy);letter-spacing:-.015em;margin-top:3px}
-.ph-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.last-run{font-size:12px;color:var(--ink-3);margin-right:4px}
-.last-run b{color:var(--ink-2);font-weight:650}
-.seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:8px;padding:2px}
-.seg button{font-size:12px;font-weight:600;color:var(--ink-2);padding:4px 10px;border-radius:6px}
-.seg button.on{background:var(--navy);color:#fff}
-.btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;padding:7px 13px;border-radius:8px;white-space:nowrap;transition:background calc(.15s*var(--slow)),transform calc(.1s*var(--slow))}
+/* ---------- Page ---------- */
+.page{flex:1;display:flex;flex-direction:column;gap:16px;padding:22px 24px;min-height:0}
+.page-head{display:flex;align-items:flex-end;gap:20px}
+h1{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em}
+.lead{font-size:15px;color:var(--ink-2);margin-top:4px}
+.sources{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--ink-3)}
+.src{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.src i{width:7px;height:7px;border-radius:50%;background:#2BC48A;box-shadow:0 0 0 3px rgba(43,196,138,.18);animation:breathe calc(2s*var(--slow)) ease-in-out infinite}
+.ph-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.last{font-size:13.5px;color:var(--ink-3)}
+.last b{color:var(--ink-2);font-weight:650}
+.btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:650;padding:10px 18px;border-radius:9px;white-space:nowrap;transition:background calc(.15s*var(--slow)),transform calc(.1s*var(--slow))}
 .btn.primary{background:var(--blue);color:#fff}
 .btn.primary:hover{background:var(--navy)}
-.btn.ghost{border:1px solid var(--line);color:var(--navy);background:#fff}
-.btn.sm{font-size:11.5px;padding:5px 10px}
-.btn.pressed{transform:scale(.95)}
 .btn.busy{background:var(--navy);pointer-events:none}
+.btn.ghost{border:1px solid var(--line);background:#fff;color:var(--navy);font-size:12.5px;padding:6px 12px}
 
-/* KPI row + live stream */
-.kpis{display:flex;gap:12px;height:86px;flex:none}
-.kpi{width:188px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 15px}
-.kpi-label{font-size:12px;font-weight:600;color:var(--ink-2)}
-.kpi-val{font-size:26px;font-weight:750;color:var(--navy);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.2;margin-top:2px}
-.kpi-sub{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+/* KPI cards */
+.kpis{display:flex;gap:16px;flex:none}
+.kpi{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px}
+.kpi .k-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#E8F1FA;color:var(--blue);flex:none}
+.kpi-label{font-size:14px;font-weight:600;color:var(--ink-2)}
+.kpi-val{font-size:34px;font-weight:750;color:var(--navy);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi-sub{font-size:13px;color:var(--ink-3)}
+.kpi.alert{border-color:#F4C2BD;background:linear-gradient(180deg,#FFF7F6,#fff)}
+.kpi.alert .k-ic{background:var(--bad-bg);color:var(--red)}
 .kpi.alert .kpi-val{color:var(--red)}
-.kpi.alert .kpi-sub,.kpi.flag .kpi-sub{color:var(--red);font-weight:650}
-.feed{flex:1;min-width:0;background:var(--navy-deep);border-radius:12px;padding:9px 14px;color:#CFE3FF;overflow:hidden}
-.feed-head{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9FD8F5}
-.feed-head i{width:6px;height:6px;border-radius:50%;background:#2BC48A;animation:breathe calc(1.4s*var(--slow)) ease-in-out infinite}
-.feed-head span{margin-left:auto;font-weight:500;letter-spacing:0;text-transform:none;color:rgba(207,227,255,.5);font-family:var(--mono);font-size:10.5px}
-.feed-body{margin-top:5px;font-family:var(--mono);font-size:10.5px;line-height:17px;height:51px;overflow:hidden}
-.fl{display:flex;gap:8px;white-space:nowrap;animation:feedIn calc(.25s*var(--slow)) ease-out}
-.fl .ft{width:80px;color:rgba(207,227,255,.45)}
-.fl .fo{width:128px;color:#7FD6F8}
-.fl .fa{width:134px;color:#fff}
-.fl .fx{flex:1;min-width:0;color:rgba(207,227,255,.7);overflow:hidden;text-overflow:ellipsis}
-.fl .fs{width:54px;text-align:right;font-weight:700;color:#3DDC97}
-.fl.warn .fs{color:#FFC35C}
-.fl.bad .fs{color:#FF7A6E}
-.fl.bad .fx{color:#FFB3AC}
 
 /* Panels */
 .content{flex:1;display:flex;gap:16px;min-height:0}
-.panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 2px rgba(0,30,80,.05);display:flex;flex-direction:column;min-height:0;overflow:hidden}
-#p-fleet{width:524px;flex:none}
-#p-agent{width:462px;flex:none}
-#p-chat{flex:1;min-width:0}
-.panel-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line-2);min-height:54px}
-.ptitle{font-size:14.5px;font-weight:750;color:var(--ink)}
-.psub{font-size:11.5px;color:var(--ink-3);margin-top:1px}
-.scope{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);background:#E8F4FB;border-radius:4px;padding:2px 6px;margin-left:6px;vertical-align:2px}
-.pill{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:650;padding:4px 10px;border-radius:999px;background:var(--tint);color:var(--ink-2);border:1px solid var(--line);white-space:nowrap}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(0,30,80,.05);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+#p-all{width:520px;flex:none}
+#p-one{width:520px;flex:none}
+#p-ask{flex:1;min-width:0}
+.panel-head{display:flex;align-items:center;gap:12px;padding:16px 20px 12px}
+.ptitle{font-size:17px;font-weight:750}
+.psub{font-size:13px;color:var(--ink-3);margin-top:2px}
+.pill{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;padding:5px 11px;border-radius:999px;background:var(--tint);color:var(--ink-2);border:1px solid var(--line);white-space:nowrap}
 .pill.busy{color:var(--blue);background:#E8F4FB;border-color:#BFE0F3}
-.pill.done{color:var(--ok);background:var(--ok-bg);border-color:#BFE6D2}
-.pill.bad{color:var(--red);background:var(--bad-bg);border-color:#F4C2BD}
-.spin{width:12px;height:12px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin calc(.8s*var(--slow)) linear infinite;flex:none}
-.ic{width:14px;height:14px}
+.pill.ok{color:var(--ok);background:var(--ok-bg);border-color:#BFE6D2}
+.pill.warn{color:var(--warn);background:var(--warn-bg);border-color:#F5D9A6}
+.pill.bad{color:#fff;background:var(--red);border-color:var(--red)}
+.spin{width:13px;height:13px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:spin calc(.8s*var(--slow)) linear infinite;flex:none}
 
-/* Fleet table */
-.filters{display:flex;gap:6px;padding:10px 16px 8px}
-.filters span{font-size:11.5px;font-weight:600;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:#fff;white-space:nowrap}
-.filters span.on{background:var(--navy);border-color:var(--navy);color:#fff}
-.filters b{font-weight:800;margin-left:4px}
-.filters .f-bad b,.filters .f-unreg b{color:var(--red)}
-.filters .f-warn b{color:var(--warn)}
-.filters .f-ok b{color:var(--ok)}
-.tbl-wrap{position:relative;margin:0 16px;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex:none}
-.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
-.tbl th{height:28px;text-align:left;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding:0 7px;white-space:nowrap;background:#F4F7FB;border-bottom:1px solid var(--line)}
-.tbl th.n,.tbl td.n{text-align:right}
-.tbl td{height:27px;padding:0 7px;border-top:1px solid var(--line-2);white-space:nowrap;transition:background calc(.25s*var(--slow))}
-.tbl tr:first-child td{border-top:0}
-.tbl tr.row{cursor:pointer}
-.tbl tr.row:hover td{background:var(--tint)}
-.tbl .nm{font-weight:650;color:var(--ink)}
-.tbl .nm.svc{font-family:var(--mono);font-size:11.5px}
-.tbl .bl{color:var(--ink-3)}
-.tbl .sp{font-variant-numeric:tabular-nums;color:var(--ink-2)}
-.tbl tr.scanning td{background:#EAF6FD}
-.tbl tr.selected td{background:#E3EFFA}
-.tbl tr.selected td:first-child{box-shadow:inset 3px 0 0 var(--blue)}
-.tbl tr.pat td:first-child{box-shadow:inset 3px 0 0 var(--red)}
-.tbl tr.unreg td{background:#FFF8F7}
-.pa{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;margin-left:6px;vertical-align:1px;transform:scale(0);transition:transform calc(.3s*var(--slow)) cubic-bezier(.3,1.6,.5,1)}
-.tbl tr.pat .pa{transform:scale(1)}
-.risk{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end}
-.risk b{width:20px;text-align:right;font-weight:750;font-variant-numeric:tabular-nums;color:var(--ink-3)}
-.risk i{width:22px;height:5px;border-radius:3px;background:var(--line-2);overflow:hidden;display:block}
-.risk i u{display:block;height:100%;width:0;border-radius:3px;transition:width calc(.45s*var(--slow)) ease-out}
-.chip{display:inline-block;font-size:9.5px;font-weight:800;padding:3px 7px;border-radius:999px;background:#ECF0F5;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
-tr.scanning .chip{background:#D5ECF9;color:var(--blue)}
-tr.ok .chip{background:var(--ok-bg);color:var(--ok)} tr.ok .risk u{background:var(--ok)}
-tr.warn .chip{background:var(--warn-bg);color:var(--warn)} tr.warn .risk u{background:var(--amber)} tr.warn .risk b{color:var(--warn)}
-tr.bad .chip{background:var(--red);color:#fff} tr.bad .risk u{background:var(--red)} tr.bad .risk b{color:var(--red)}
-tr.unreg .chip{background:#fff;color:var(--red);box-shadow:inset 0 0 0 1.5px var(--red)} tr.unreg .risk u{background:var(--red)} tr.unreg .risk b{color:var(--red)}
-.beam{position:absolute;left:0;right:0;top:0;height:46px;pointer-events:none;opacity:0;
-  background:linear-gradient(180deg,rgba(0,189,242,0),rgba(0,189,242,.14) 70%,rgba(0,189,242,.6) 97%,rgba(0,189,242,0))}
-.beam.go{animation:sweep calc(2.3s*var(--slow)) linear forwards}
-.pattern-zone{position:relative;margin:12px 16px 14px;height:138px;flex:none}
-.pat-empty{position:absolute;inset:0;border:1.5px dashed #CBD5E2;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--ink-3);font-size:12.5px;transition:opacity calc(.3s*var(--slow))}
-.pattern{position:absolute;inset:0;border:1px solid #F4C9C4;border-left:4px solid var(--red);border-radius:10px;padding:10px 13px;background:linear-gradient(180deg,#FFF5F4,#fff 75%);
+/* All agents */
+.list{margin:0 20px;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative;flex:none}
+.row{display:flex;align-items:center;gap:12px;height:34px;padding:0 14px;border-top:1px solid var(--line-2);cursor:pointer;transition:background calc(.25s*var(--slow))}
+.row:first-child{border-top:0}
+.row:hover{background:var(--tint)}
+.row .nm{font-size:14px;font-weight:650;width:190px}
+.row .dept{font-size:13px;color:var(--ink-3);flex:1}
+.row .mark{width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;transform:scale(0);transition:transform calc(.3s*var(--slow)) cubic-bezier(.3,1.6,.5,1)}
+.row.pat .mark{transform:scale(1)}
+.row.pat{box-shadow:inset 3px 0 0 var(--red)}
+.row.checking{background:#EAF6FD}
+.row.selected{background:#E3EFFA;box-shadow:inset 3px 0 0 var(--blue)}
+.status{width:86px;text-align:center;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 0;border-radius:999px;background:#ECF0F5;color:var(--ink-3)}
+.row.checking .status{background:#D5ECF9;color:var(--blue)}
+.row.ok .status{background:var(--ok-bg);color:var(--ok)}
+.row.warn .status{background:var(--warn-bg);color:var(--warn)}
+.row.bad .status{background:var(--red);color:#fff}
+.more{font-size:12.5px;color:var(--ink-3);margin:8px 20px 0}
+.beam{position:absolute;left:0;right:0;top:0;height:40px;pointer-events:none;opacity:0;background:linear-gradient(180deg,rgba(0,189,242,0),rgba(0,189,242,.14) 70%,rgba(0,189,242,.6) 97%,rgba(0,189,242,0))}
+.beam.go{animation:sweep calc(2.4s*var(--slow)) linear forwards}
+.pattern-zone{position:relative;margin:14px 20px 18px;flex:1;min-height:122px}
+.pat-empty{position:absolute;inset:0;border:1.5px dashed #CBD5E2;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:13.5px;transition:opacity calc(.3s*var(--slow))}
+.pattern{position:absolute;inset:0;border:1px solid #F4C9C4;border-left:5px solid var(--red);border-radius:12px;padding:13px 16px;background:linear-gradient(180deg,#FFF5F4,#fff 80%);
   opacity:0;transform:translateY(8px);transition:opacity calc(.4s*var(--slow)),transform calc(.4s*var(--slow)) cubic-bezier(.2,.8,.2,1)}
 .pattern.show{opacity:1;transform:none}
-.pat-row{display:flex;align-items:center;gap:8px}
-.pat-badge{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--red);padding:3px 7px;border-radius:4px}
-.pat-trend{margin-left:auto;display:flex;align-items:flex-end;gap:7px;font-size:11.5px;font-weight:700;color:var(--red)}
-.bars{display:flex;align-items:flex-end;gap:2px;height:16px}
-.bars i{width:4px;height:0;background:#F2A49C;border-radius:1px;transition:height calc(.4s*var(--slow)) ease-out}
-.bars i:last-child{background:var(--red)}
-.pat-title{font-size:14.5px;font-weight:750;margin-top:6px}
-.pat-desc{font-size:12px;color:var(--ink-2);margin-top:1px}
-.pat-agents{display:flex;align-items:center;gap:5px;margin-top:8px}
-.ag-chip{white-space:nowrap;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:650;color:var(--ink);padding:2px 7px 2px 3px;border-radius:999px;background:#fff;border:1px solid #F4C2BD}
-.ag-chip b{width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:8.5px;display:grid;place-items:center}
-.pat-refs{display:flex;align-items:center;gap:5px;margin-top:7px;font-size:11px;color:var(--ink-3)}
-.ref{font-family:var(--mono);font-size:10px;color:var(--navy);background:#EEF3FA;border:1px solid #D9E3F1;border-radius:4px;padding:1px 5px}
+.pat-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--red);padding:3px 8px;border-radius:5px}
+.pat-title{font-size:16px;font-weight:750;margin-top:8px;line-height:1.3}
+.pat-desc{font-size:13.5px;color:var(--ink-2);margin-top:3px}
+.pat-agents{display:flex;gap:6px;margin-top:10px}
+.ag{display:inline-flex;align-items:center;font-size:12.5px;font-weight:650;color:var(--red);padding:3px 10px;border-radius:999px;background:#fff;border:1px solid #F4C2BD;white-space:nowrap}
 
-/* Agent deep-dive */
-.ad-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--ink-3);text-align:center;padding:0 48px 30px}
-.ad-empty .big{width:52px;height:52px;border-radius:14px;background:var(--tint);border:1px solid var(--line);display:grid;place-items:center;margin-bottom:6px}
-.ad-empty b{font-size:14px;color:var(--ink-2)}
-.ad-empty span{font-size:12.5px;line-height:1.45}
-.ad-content{padding:12px 16px 14px;display:flex;flex-direction:column;min-height:0;animation:fadeUp calc(.3s*var(--slow)) ease-out}
-.ad-name{font-size:16px;font-weight:750}
-.ad-tags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
-.tag{font-size:10.5px;font-weight:600;color:var(--ink-2);background:var(--tint);border:1px solid var(--line);border-radius:5px;padding:2px 6px;white-space:nowrap}
-.tag.bad{color:#fff;background:var(--red);border-color:var(--red)}
-.tag.warn{color:var(--warn);background:var(--warn-bg);border-color:#F5D9A6}
-.tag.ok{color:var(--ok);background:var(--ok-bg);border-color:#BFE6D2}
-.tag.unreg{color:var(--red);background:#fff;border-color:var(--red)}
-.sec{display:flex;align-items:baseline;gap:8px;margin:12px 0 5px}
-.sec b{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);white-space:nowrap}
-.sec span{font-size:10.5px;color:var(--ink-3);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.trace{border:1px solid var(--line);border-radius:9px;padding:4px 10px}
-.span-row{display:flex;align-items:center;gap:10px;height:26px;opacity:0;transform:translateX(-6px);transition:opacity calc(.25s*var(--slow)),transform calc(.25s*var(--slow))}
-.span-row.on{opacity:1;transform:none}
-.span-name{width:190px;flex:none;padding-left:calc(var(--d)*13px);font-family:var(--mono);font-size:11px;white-space:nowrap;overflow:hidden;display:flex;align-items:center;gap:6px}
-.span-name::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--blue);flex:none}
-.span-name em{font-style:normal;color:var(--ink-3)}
-.span-track{position:relative;flex:1;height:14px;background:linear-gradient(90deg,#EEF2F7 1px,transparent 1px) 0 0/25% 100%}
-.span-bar{position:absolute;top:2px;height:10px;border-radius:3px;width:0;background:var(--blue);transition:width calc(.45s*var(--slow)) cubic-bezier(.2,.8,.2,1)}
-.span-row.on .span-bar{width:var(--w)}
-.span-note{position:absolute;top:-1px;font-size:10.5px;font-weight:650;color:var(--ink-2);white-space:nowrap;opacity:0;transition:opacity calc(.3s*var(--slow)) calc(.25s*var(--slow))}
-.span-row.on .span-note{opacity:1}
-.span-row.root .span-name::before,.span-row.root .span-bar{background:#9DB4D6}
-.span-row.llm .span-name::before,.span-row.llm .span-bar{background:var(--sky)}
-.span-row.guard .span-name::before,.span-row.guard .span-bar{background:var(--navy)}
-.span-row.warn .span-name::before,.span-row.warn .span-bar{background:var(--amber)}
-.span-row.warn .span-note{color:var(--warn)}
-.span-row.bad{background:linear-gradient(90deg,var(--bad-bg),rgba(253,233,231,0));border-radius:5px;margin:0 -6px;padding:0 6px}
-.span-row.bad .span-name{color:var(--red);font-weight:700}
-.span-row.bad .span-name::before,.span-row.bad .span-bar{background:var(--red)}
-.span-row.bad .span-note{color:var(--red);font-weight:800}
-.check{display:flex;align-items:center;gap:9px;height:24px;font-size:12.5px;color:var(--ink-2)}
-.ck-ic{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;color:var(--blue);flex:none}
-.ck-ic .spin{width:11px;height:11px}
-.check.ok .ck-ic{background:var(--ok);color:#fff}
-.check.warn .ck-ic{background:var(--amber);color:#fff}
-.check.bad .ck-ic{background:var(--red);color:#fff}
-.check.bad .ck-txt{color:var(--red);font-weight:700}
-.check.warn .ck-txt{color:var(--warn);font-weight:650}
-.ck-ic svg{animation:pop calc(.25s*var(--slow)) ease-out}
-.ck-ref{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
-.finding{margin-top:10px;border-radius:9px;padding:10px 13px;border:1px solid #F4C9C4;border-left:4px solid var(--red);background:#FFF7F6;
+/* One agent */
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:var(--ink-3);padding:0 60px 40px}
+.empty .big{width:56px;height:56px;border-radius:16px;background:var(--tint);border:1px solid var(--line);display:grid;place-items:center;margin-bottom:6px}
+.empty b{font-size:15px;color:var(--ink-2)}
+.empty span{font-size:13.5px;line-height:1.5}
+.one{padding:0 20px 18px;display:flex;flex-direction:column;min-height:0;animation:fadeUp calc(.3s*var(--slow)) ease-out}
+.one-name{font-size:19px;font-weight:750}
+.one-meta{font-size:13px;color:var(--ink-3);margin-top:2px}
+.label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin:16px 0 8px}
+.steps{position:relative}
+.step{position:relative;display:flex;align-items:center;gap:12px;height:38px;padding:0 10px;border-radius:8px;opacity:0;transform:translateX(-8px);transition:opacity calc(.25s*var(--slow)),transform calc(.25s*var(--slow))}
+.step.on{opacity:1;transform:none}
+.step:not(:last-child)::after{content:"";position:absolute;left:21px;top:29px;height:18px;width:2px;background:var(--line)}
+.step .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--ok);flex:none;z-index:1}
+.step .txt{font-size:14.5px;color:var(--ink)}
+.step.bad{background:var(--bad-bg)}
+.step.bad .dot{background:var(--red)}
+.step.bad .txt{color:var(--red);font-weight:700}
+.step.warn .dot{background:var(--amber)}
+.step.warn .txt{color:var(--warn);font-weight:650}
+.verdict{margin-top:14px;border-radius:12px;padding:14px 16px;border:1px solid #F4C9C4;border-left:5px solid var(--red);background:#FFF7F6;
   opacity:0;transform:translateY(8px);transition:opacity calc(.35s*var(--slow)),transform calc(.35s*var(--slow)) cubic-bezier(.2,.8,.2,1)}
-.finding.show{opacity:1;transform:none}
-.finding.warn{border-color:#F5D9A6;border-left-color:var(--amber);background:#FFFAF0}
-.finding.ok{border-color:#BFE6D2;border-left-color:var(--ok);background:#F3FBF7}
-.f-top{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink-3)}
-.sev{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--red);padding:2px 6px;border-radius:4px}
-.finding.warn .sev{background:var(--amber)}
-.finding.ok .sev{background:var(--ok)}
-.f-top .f-id{margin-left:auto;font-family:var(--mono)}
-.f-title{font-size:14px;font-weight:750;margin-top:5px;line-height:1.3}
-.f-ev{font-size:11.5px;color:var(--ink-2);margin-top:3px;line-height:1.4}
-.f-actions{display:flex;align-items:center;gap:7px;margin-top:8px;min-height:30px}
-.f-conf{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink-2);line-height:1.45;animation:fadeUp calc(.3s*var(--slow)) ease-out}
-.f-conf b{color:var(--ok);font-weight:700}
-.f-conf .ck-ic{background:var(--ok);color:#fff;margin-top:1px}
+.verdict.show{opacity:1;transform:none}
+.verdict.warn{border-color:#F5D9A6;border-left-color:var(--amber);background:#FFFAF0}
+.verdict.ok{border-color:#BFE6D2;border-left-color:var(--ok);background:#F3FBF7}
+.v-kind{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+.verdict.warn .v-kind{color:var(--warn)}
+.verdict.ok .v-kind{color:var(--ok)}
+.v-title{font-size:17px;font-weight:750;margin-top:4px;line-height:1.3}
+.v-rule{font-size:13.5px;color:var(--ink-2);margin-top:3px}
+.v-auto{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid rgba(218,41,28,.15);font-size:14px;font-weight:650;color:var(--ok);opacity:0;transition:opacity calc(.3s*var(--slow))}
+.verdict.warn .v-auto{border-top-color:rgba(232,155,26,.25);color:var(--warn)}
+.v-auto.show{opacity:1}
+.v-auto .dot{width:22px;height:22px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center}
+.verdict.warn .v-auto .dot{background:var(--amber)}
+.v-auto span{font-weight:500;color:var(--ink-3);margin-left:auto;font-size:12.5px}
 
-/* Ask Telemetry */
-.ai-mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--navy));display:grid;place-items:center;flex:none}
-.beta{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);background:#E8F4FB;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:2px}
-.chat-body{flex:1;min-height:0;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:9px;scrollbar-width:none}
-.chat-body::-webkit-scrollbar{display:none}
-.msg{font-size:12.5px;line-height:1.45;border-radius:11px;padding:9px 11px}
-.msg.ai{background:var(--tint);border:1px solid var(--line);border-top-left-radius:3px;animation:fadeUp calc(.3s*var(--slow)) ease-out}
-.msg.user{align-self:flex-end;max-width:90%;background:var(--navy);color:#fff;border-top-right-radius:3px;animation:fadeUp calc(.3s*var(--slow)) ease-out}
-.who{font-size:10.5px;font-weight:800;letter-spacing:.04em;color:var(--blue);margin-bottom:3px}
-.suggest{display:flex;flex-wrap:wrap;gap:6px}
-.suggest button{font-size:11.5px;font-weight:600;color:var(--navy);border:1px solid #CFDDF0;background:#fff;border-radius:999px;padding:4px 10px}
+/* Ask */
+.ai-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--navy));display:grid;place-items:center;flex:none}
+.chat{flex:1;min-height:0;overflow-y:auto;padding:4px 20px 14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.chat::-webkit-scrollbar{display:none}
+.msg{font-size:14px;line-height:1.5;border-radius:12px;padding:11px 14px}
+.msg.ai{background:var(--tint);border:1px solid var(--line);border-top-left-radius:4px;animation:fadeUp calc(.3s*var(--slow)) ease-out}
+.msg.user{align-self:flex-end;max-width:88%;background:var(--navy);color:#fff;border-top-right-radius:4px;animation:fadeUp calc(.3s*var(--slow)) ease-out}
+.who{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--blue);margin-bottom:3px}
+.suggest{display:flex;flex-wrap:wrap;gap:7px}
+.suggest button{font-size:13px;font-weight:600;color:var(--navy);border:1px solid #CFDDF0;background:#fff;border-radius:999px;padding:5px 12px}
 .suggest button:hover{border-color:var(--blue);color:var(--blue)}
-.thinking{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--blue);font-family:var(--mono)}
-.thinking.done{color:var(--ok)}
-.blk{animation:fadeUp calc(.3s*var(--slow)) ease-out both;margin-top:7px}
-.ans{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border:1px solid var(--line)}
-.ans th{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);text-align:left;font-weight:800;padding:5px 8px;background:#F1F5FA}
-.ans td{padding:5px 8px;border-top:1px solid var(--line);white-space:nowrap}
-.ans .n{text-align:right;font-variant-numeric:tabular-nums}
-.ans td.n{font-weight:650}
-.ans tr.hot td:first-child{font-weight:750;color:var(--red)}
-.dotr{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
-.rc{color:var(--ink-2)}
-.rc b{color:var(--ink)}
-.cites{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:11px;color:var(--ink-3)}
-.cite{font-family:var(--mono);font-size:10px;color:var(--blue);background:#E8F4FB;border:1px solid #BFE0F3;border-radius:4px;padding:1px 5px}
-.ans-actions{display:flex;gap:6px}
-.chat-input{margin:0 14px 14px;display:flex;align-items:center;gap:8px;border:1.5px solid #CFDDF0;border-radius:11px;padding:5px 5px 5px 11px;background:#fff;transition:border-color calc(.2s*var(--slow)),box-shadow calc(.2s*var(--slow))}
+.thinking{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--blue)}
+.blk{animation:fadeUp calc(.3s*var(--slow)) ease-out both;margin-top:8px}
+.ans{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--line)}
+.ans td{padding:7px 10px;border-top:1px solid var(--line);white-space:nowrap}
+.ans tr:first-child td{border-top:0}
+.ans td.n{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.ans td:first-child{font-weight:650}
+.ans .r{color:var(--red)}
+.small{font-size:12.5px;color:var(--ink-3)}
+.chat-input{margin:0 20px 18px;display:flex;align-items:center;gap:8px;border:1.5px solid #CFDDF0;border-radius:12px;padding:6px 6px 6px 14px;background:#fff;transition:border-color calc(.2s*var(--slow)),box-shadow calc(.2s*var(--slow))}
 .chat-input.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(5,109,174,.14)}
-.chat-input input{flex:1;min-width:0;font-size:12.5px;color:var(--ink)}
+.chat-input input{flex:1;min-width:0;font-size:14px;color:var(--ink)}
 .chat-input input::placeholder{color:var(--ink-3)}
-.send{width:30px;height:30px;border-radius:8px;background:var(--blue);display:grid;place-items:center;flex:none;transition:transform calc(.1s*var(--slow))}
+.send{width:36px;height:36px;border-radius:9px;background:var(--blue);display:grid;place-items:center;flex:none;transition:transform calc(.1s*var(--slow))}
 .send.pressed{background:var(--navy);transform:scale(.9)}
-.disclaim{font-size:10.5px;color:var(--ink-3);text-align:center;margin:-8px 14px 10px}
-
-/* Status bar */
-.statusbar{height:26px;flex:none;display:flex;align-items:center;gap:16px;padding:0 20px;font-size:11px;color:var(--ink-3);border-top:1px solid var(--line);background:#fff;white-space:nowrap}
-.statusbar .ok{display:flex;align-items:center;gap:6px;color:var(--ok);font-weight:650}
-.statusbar .ok i{width:6px;height:6px;border-radius:50%;background:#2BC48A}
-.statusbar .mono{font-family:var(--mono);font-size:10.5px}
-.statusbar .right{margin-left:auto}
 
 /* Toasts */
-#toasts{position:absolute;top:66px;right:18px;width:340px;display:flex;flex-direction:column;gap:8px;z-index:40;pointer-events:none}
-.toast{display:flex;gap:11px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:10px;padding:10px 12px;box-shadow:0 12px 30px rgba(0,26,69,.18);
-  animation:toastIn calc(.35s*var(--slow)) cubic-bezier(.2,.8,.2,1)}
+#toasts{position:absolute;top:70px;right:24px;width:360px;display:flex;flex-direction:column;gap:8px;z-index:40;pointer-events:none}
+.toast{display:flex;gap:12px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--ok);border-radius:12px;padding:12px 14px;box-shadow:0 12px 30px rgba(0,26,69,.18);animation:toastIn calc(.35s*var(--slow)) cubic-bezier(.2,.8,.2,1)}
 .toast.out{animation:toastOut calc(.3s*var(--slow)) ease-in forwards}
-.toast .t-ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;flex:none;margin-top:1px}
-.toast b{display:block;font-size:13px;font-weight:750}
-.toast span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px;line-height:1.35}
-.toast.bad{border-left-color:var(--red)} .toast.bad .t-ic{background:var(--red)}
-.toast.ok{border-left-color:var(--ok)} .toast.ok .t-ic{background:var(--ok)}
+.toast .t-ic{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--ok);color:#fff;flex:none}
+.toast b{display:block;font-size:14.5px;font-weight:750}
+.toast span{display:block;font-size:13.5px;color:var(--ink-2);margin-top:2px;line-height:1.4}
 
 /* Demo cursor */
 #cursor{position:absolute;left:0;top:0;z-index:60;pointer-events:none;opacity:0;transform:translate(900px,520px)}
@@ -311,10 +199,8 @@ tr.unreg .chip{background:#fff;color:var(--red);box-shadow:inset 0 0 0 1.5px var
 
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes breathe{0%,100%{opacity:1}50%{opacity:.45}}
-@keyframes feedIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes pop{from{transform:scale(.3)}to{transform:scale(1)}}
-@keyframes sweep{0%{opacity:0;transform:translateY(-16px)}8%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translateY(330px)}}
+@keyframes sweep{0%{opacity:0;transform:translateY(-14px)}8%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translateY(300px)}}
 @keyframes ripple{from{opacity:1;transform:scale(.4)}to{opacity:0;transform:scale(1.5)}}
 @keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0;transform:translateX(30px)}}
@@ -323,167 +209,105 @@ tr.unreg .chip{background:#fff;color:var(--red);box-shadow:inset 0 0 0 1.5px var
 <body>
 <div id="app">
 
-  <!-- Top app bar -->
   <header class="topbar">
     <div class="brand">
       <!-- Optional: save your organisation's white logo as assets/logo.svg and it shows here -->
       <img class="org-logo" src="assets/logo.svg" alt="" onerror="this.remove()">
       <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l7.5 3v6c0 4.6-3.1 8.4-7.5 10-4.4-1.6-7.5-5.4-7.5-10v-6z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 12.5h2.4l1.5-3.2 2.3 6 1.6-2.8H17" stroke="#00BDF2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <span class="brand-name">Telemetry Tracker</span>
-      <span class="brand-div"></span>
-      <span class="brand-sub">Internal Audit · AI Assurance</span>
+      <span class="brand-sub">Internal Audit</span>
     </div>
-    <div class="search">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
-      Search agents, traces, issues, controls...
-      <kbd>Ctrl K</kbd>
-    </div>
+    <nav class="tabs"><a class="on">Overview</a><a>Agents</a><a>Alerts</a><a>Reports</a></nav>
     <div class="tb-right">
-      <span class="env">UAT · synthetic data</span>
-      <div class="tb-icon"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1M8 11.3v.01"/></svg></div>
-      <div class="tb-icon"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V7a4 4 0 0 1 8 0v4l1.2 1.5H2.8z"/><path d="M6.5 14h3"/></svg><span class="count" id="bell">2</span></div>
-      <div class="user"><div class="av">IA</div><div><b>Internal Audit</b><span>AI Assurance team</span></div></div>
+      <span class="demo">Demo data</span>
+      <div class="bell"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V7a4 4 0 0 1 8 0v4l1.2 1.5H2.8z"/><path d="M6.5 14h3"/></svg><span class="count" id="bell">2</span></div>
+      <div class="user"><div class="av">IA</div>Internal Audit</div>
     </div>
   </header>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <nav class="nav">
-      <div class="nav-sec">MONITOR</div>
-      <a class="on"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1"/><rect x="9" y="9" width="4.5" height="4.5" rx="1"/></svg>Overview</a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="5.5" width="10" height="7.5" rx="2"/><path d="M8 3v2.5M6 9h.01M10 9h.01"/></svg>AI inventory<span class="badge" id="nav-inv">24</span></a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4h7M4.5 8h8.5M6.5 12h5"/></svg>Traces</a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 14V2.5M3.5 3h8.5l-1.8 3 1.8 3H3.5"/></svg>Findings<span class="badge red" id="nav-find">5</span></a>
-      <div class="nav-sec">ANALYSE</div>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2.5 3.5h11V11H7l-3 2.5V11H2.5z"/></svg>Ask Telemetry<span class="new">AI</span></a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="4.5" r="2"/><circle cx="12" cy="4.5" r="2"/><circle cx="8" cy="12" r="2"/><path d="M5.3 6l1.8 4.3M10.7 6l-1.8 4.3M6 4.5h4"/></svg>Cross-agent risks</a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M8 2.5l6 11H2z"/><path d="M8 7v3M8 12v.01"/></svg>AI incident library</a>
-      <div class="nav-sec">AUDIT</div>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg>Issues &amp; actions<span class="badge" id="nav-issues">12</span></a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M2.5 4.5h4l1.5 1.5h5.5v7h-11z"/></svg>Workpapers</a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 2l5 2v4c0 3-2.2 5.2-5 6-2.8-.8-5-3-5-6V4z"/></svg>Control library</a>
-      <a><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="M6 8h4M6 10.5h4"/></svg>Audit committee pack</a>
-    </nav>
-    <div class="sources">
-      <div class="sources-h">LOG COMPLETENESS</div>
-      <div class="src"><i class="dot"></i>OpenTelemetry<em>99.8%</em></div>
-      <div class="src"><i class="dot"></i>Langfuse<em>100%</em></div>
-      <div class="src"><i class="dot"></i>ARC / Agent Flow<em class="low">98.9%</em></div>
-    </div>
-  </aside>
-
-  <!-- Main -->
-  <div class="main">
-    <div class="page">
-      <div class="page-head">
-        <div>
-          <div class="crumbs">Internal Audit <span>›</span> AI Assurance <span>›</span> Overview</div>
-          <h1>AI agent assurance</h1>
+  <div class="page">
+    <div class="page-head">
+      <div>
+        <h1>AI agent monitoring</h1>
+        <div class="lead">Telemetry Tracker checks every action taken by every AI agent, automatically.</div>
+        <div class="sources">Reads activity logs from
+          <span class="src"><i></i>OpenTelemetry</span><span class="src"><i></i>Langfuse</span><span class="src"><i></i>ARC / Agent Flow</span>
         </div>
-        <div class="ph-right">
-          <span class="last-run" id="last-run">Last automated review <b>09:26</b> · next 09:41</span>
-          <div class="seg"><button class="on">24h</button><button>7d</button><button>30d</button></div>
-          <button class="btn ghost">Export to workpaper</button>
-          <button class="btn primary" id="run-btn"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>Run review now</button>
+      </div>
+      <div class="ph-right">
+        <span class="last" id="last">Last check <b>09:26</b></span>
+        <button class="btn primary" id="run-btn"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>Check now</button>
+      </div>
+    </div>
+
+    <section class="kpis">
+      <div class="kpi">
+        <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="5.5" width="10" height="7.5" rx="2"/><path d="M8 3v2.5M6 9h.01M10 9h.01"/></svg></div>
+        <div><div class="kpi-label">AI agents watched</div><div class="kpi-val">24</div><div class="kpi-sub">across 11 business areas</div></div>
+      </div>
+      <div class="kpi">
+        <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.5l3 3 8-8"/></svg></div>
+        <div><div class="kpi-label">Actions checked today</div><div class="kpi-val" id="k-actions">1,183,904</div><div class="kpi-sub">every single one, automatically</div></div>
+      </div>
+      <div class="kpi" id="k-flag-card">
+        <div class="k-ic"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 14V2.5M3.5 3h8.5l-1.8 3 1.8 3H3.5"/></svg></div>
+        <div><div class="kpi-label">Need an auditor</div><div class="kpi-val" id="k-flag">-</div><div class="kpi-sub" id="k-flag-sub">waiting for check</div></div>
+      </div>
+    </section>
+
+    <section class="content">
+      <!-- Across all agents -->
+      <div class="panel" id="p-all">
+        <div class="panel-head">
+          <div><div class="ptitle">All agents</div><div class="psub">Checked against the rules, all the time</div></div>
+          <div class="pill" id="all-status">Next check 09:41</div>
+        </div>
+        <div class="list" id="list"><div class="beam" id="beam"></div></div>
+        <div class="more">Showing 9 of 24 agents</div>
+        <div class="pattern-zone">
+          <div class="pat-empty" id="pat-empty">Problems shared by several agents will show here</div>
+          <div class="pattern" id="pattern">
+            <span class="pat-tag">Same problem in 3 agents</span>
+            <div class="pat-title">Hidden instructions in uploaded files are tricking agents</div>
+            <div class="pat-desc">3 times more than usual. A known attack seen at other firms.</div>
+            <div class="pat-agents"><span class="ag">KYC Onboarding</span><span class="ag">Client Complaints</span><span class="ag">Contract Summariser</span></div>
+          </div>
         </div>
       </div>
 
-      <section class="kpis">
-        <div class="kpi" id="k-agents-card"><div class="kpi-label">Agents monitored</div><div class="kpi-val" id="k-agents">24</div><div class="kpi-sub" id="k-agents-sub">all in AI inventory</div></div>
-        <div class="kpi"><div class="kpi-label">Spans tested today</div><div class="kpi-val" id="k-spans">1,183,904</div><div class="kpi-sub">100% tested, no sampling</div></div>
-        <div class="kpi"><div class="kpi-label">Control tests run</div><div class="kpi-val" id="k-checks">31,208</div><div class="kpi-sub">48 controls · 6 policy packs</div></div>
-        <div class="kpi" id="k-find-card"><div class="kpi-label">Findings to validate</div><div class="kpi-val" id="k-find">5</div><div class="kpi-sub" id="k-find-sub">as of 09:26 review</div></div>
-        <div class="feed">
-          <div class="feed-head"><i></i>Live telemetry stream<span>OTel gen_ai.* conventions · 1.2k spans/s</span></div>
-          <div class="feed-body" id="feed"></div>
+      <!-- Single agent -->
+      <div class="panel" id="p-one">
+        <div class="panel-head">
+          <div><div class="ptitle">One agent</div><div class="psub">What it did, step by step</div></div>
+          <div class="pill" id="one-status">Pick an agent</div>
         </div>
-      </section>
+        <div class="empty" id="empty">
+          <div class="big"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8392A8" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="14" cy="18" r="2"/></svg></div>
+          <b>Click an agent to see what it did</b>
+          <span>Telemetry Tracker replays each decision and checks it against the rules.</span>
+        </div>
+        <div class="one" id="one" hidden></div>
+      </div>
 
-      <section class="content">
-        <!-- Across all agents -->
-        <div class="panel" id="p-fleet">
-          <div class="panel-head">
-            <div><div class="ptitle">Fleet review<span class="scope">All agents</span></div><div class="psub">Every agent tested against the control library</div></div>
-            <div class="pill" id="scan-status">Next review 09:41</div>
-          </div>
-          <div class="filters">
-            <span class="on">All<b id="c-all">24</b></span><span class="f-bad">Breach<b id="c-bad">-</b></span><span class="f-warn">Watch<b id="c-warn">-</b></span><span class="f-unreg">Unregistered<b id="c-unreg">-</b></span><span class="f-ok">OK<b id="c-ok">-</b></span>
-          </div>
-          <div class="tbl-wrap">
-            <table class="tbl">
-              <thead><tr><th>Agent</th><th>Business line</th><th class="n">Spans</th><th class="n">Risk</th><th>Status</th></tr></thead>
-              <tbody id="rows"></tbody>
-            </table>
-            <div class="beam" id="beam"></div>
-          </div>
-          <div class="pattern-zone">
-            <div class="pat-empty" id="pat-empty">
-              <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="4.5" r="2"/><circle cx="12" cy="4.5" r="2"/><circle cx="8" cy="12" r="2"/><path d="M5.3 6l1.8 4.3M10.7 6l-1.8 4.3M6 4.5h4"/></svg>
-              Cross-agent pattern analysis runs after each review
-            </div>
-            <div class="pattern" id="pattern">
-              <div class="pat-row">
-                <span class="pat-badge">Thematic risk · 3 agents</span>
-                <span class="pat-trend"><span class="bars" id="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>3.4x the 30-day baseline</span>
-              </div>
-              <div class="pat-title">Pattern A: prompt injection via uploaded documents</div>
-              <div class="pat-desc">Hidden instructions in customer files are changing agent behaviour (41 traces)</div>
-              <div class="pat-agents">
-                <span class="ag-chip"><b>A</b>KYC Onboarding</span><span class="ag-chip"><b>A</b>Client Complaints</span><span class="ag-chip"><b>A</b>Contract Summariser</span>
-              </div>
-              <div class="pat-refs">Matches <span class="ref">OWASP LLM01</span><span class="ref">MITRE ATLAS AML.T0051</span>and recent public AI incidents</div>
-            </div>
+      <!-- Chat -->
+      <div class="panel" id="p-ask">
+        <div class="panel-head">
+          <div class="ai-mark"><svg width="16" height="16" viewBox="0 0 16 16" fill="#fff"><path d="M8 1.5l1.5 4 4 1.5-4 1.5L8 12.5l-1.5-4-4-1.5 4-1.5zM13 11l.6 1.4 1.4.6-1.4.6L13 15l-.6-1.4L11 13l1.4-.6z"/></svg></div>
+          <div><div class="ptitle">Ask Telemetry</div><div class="psub">Ask questions in plain English</div></div>
+        </div>
+        <div class="chat" id="chat">
+          <div class="msg ai"><div class="who">TELEMETRY TRACKER</div>Ask me anything about your AI agents and what they have been doing.</div>
+          <div class="suggest" id="suggest">
+            <button>What needs my attention today?</button>
+            <button>Explain the shared problem</button>
           </div>
         </div>
-
-        <!-- Single agent -->
-        <div class="panel" id="p-agent">
-          <div class="panel-head">
-            <div><div class="ptitle">Agent deep-dive<span class="scope">Single agent</span></div><div class="psub">Decision trail rebuilt from telemetry</div></div>
-            <div class="pill" id="ad-status">No agent selected</div>
-          </div>
-          <div class="ad-empty" id="ad-empty">
-            <div class="big"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8392A8" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="14" cy="18" r="2"/></svg></div>
-            <b>Select an agent to replay its decisions</b>
-            <span>Each prompt, tool call and guardrail is rebuilt from telemetry and tested against the control library.</span>
-          </div>
-          <div class="ad-content" id="ad-content" hidden></div>
-        </div>
-
-        <!-- Chat with telemetry -->
-        <div class="panel" id="p-chat">
-          <div class="panel-head">
-            <div class="ai-mark"><svg width="15" height="15" viewBox="0 0 16 16" fill="#fff"><path d="M8 1.5l1.5 4 4 1.5-4 1.5L8 12.5l-1.5-4-4-1.5 4-1.5zM13 11l.6 1.4 1.4.6-1.4.6L13 15l-.6-1.4L11 13l1.4-.6z"/></svg></div>
-            <div><div class="ptitle">Ask Telemetry<span class="beta">BETA</span></div><div class="psub">Query agent logs in plain English</div></div>
-          </div>
-          <div class="chat-body" id="chat">
-            <div class="msg ai"><div class="who">TELEMETRY TRACKER</div>Ask about any agent, control or finding. Answers are built from logged telemetry and link to the traces used.</div>
-            <div class="suggest" id="suggest">
-              <button>Which agents bypassed approvals?</button>
-              <button>Any agents missing from the AI inventory?</button>
-              <button>Compare to recent AI incidents</button>
-            </div>
-          </div>
-          <form class="chat-input" id="chat-form" autocomplete="off">
-            <input id="chat-in" placeholder="Ask about an agent, control or finding">
-            <button class="send" id="send" type="submit" aria-label="Send"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5"/></svg></button>
-          </form>
-          <div class="disclaim">AI-generated. Check the cited traces before relying on it.</div>
-        </div>
-      </section>
-    </div>
-
-    <footer class="statusbar">
-      <span class="ok"><i></i>All collectors healthy</span>
-      <span class="mono">otel-gw-emea-01</span>
-      <span class="mono">langfuse v3</span>
-      <span class="mono">arc-agentflow 2.1</span>
-      <span>Log completeness 99.6%</span>
-      <span>Evidence store: write-once, SHA-256</span>
-      <span>Data residency: UK</span>
-      <span>Your access is logged</span>
-      <span class="right">Telemetry Tracker pilot v0.9</span>
-    </footer>
+        <form class="chat-input" id="chat-form" autocomplete="off">
+          <input id="chat-in" placeholder="Ask a question">
+          <button class="send" id="send" type="submit" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5"/></svg></button>
+        </form>
+      </div>
+    </section>
   </div>
 
   <div id="toasts"></div>
@@ -519,229 +343,138 @@ function fit() {
 }
 addEventListener('resize', fit); fit();
 
-const ICON = {
-  check: '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>',
-  cross: '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
-  bang: '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M8 3v6M8 13v.01"/></svg>',
-  ok: '<svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>',
-  play: '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>',
-};
-const RESULT_ICON = { ok: ICON.check, bad: ICON.cross, warn: ICON.bang };
+const TICK = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>';
+const CROSS = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+const BANG = '<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M8 3v6M8 13v.01"/></svg>';
+const ICON = { ok: TICK, bad: CROSS, warn: BANG };
+const PLAY = '<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>';
 
-/* ---------- Synthetic data ---------- */
+/* ---------- Demo data ---------- */
 const AGENTS = [
-  { id: 'kyc',   name: 'KYC Onboarding',      bl: 'Onboarding',      spans: '96k',  st: 'warn',  score: 58, pat: true },
-  { id: 'pay',   name: 'Payments Ops',        bl: 'Operations',      spans: '182k', st: 'bad',   score: 87 },
-  { id: 'aml',   name: 'AML Alert Triage',    bl: 'Financial Crime', spans: '141k', st: 'ok',    score: 14 },
-  { id: 'cmp',   name: 'Client Complaints',   bl: 'Consumer',        spans: '77k',  st: 'warn',  score: 52, pat: true },
-  { id: 'ghost', name: 'ops-email-bot',       bl: 'Unknown',         spans: '12k',  st: 'unreg', score: 79, svc: true },
-  { id: 'trd',   name: 'Trade Surveillance',  bl: 'Markets',         spans: '203k', st: 'ok',    score: 19 },
-  { id: 'crd',   name: 'Credit Memo Drafter', bl: 'Credit Risk',     spans: '58k',  st: 'warn',  score: 47 },
-  { id: 'try',   name: 'Treasury Recon',      bl: 'Treasury',        spans: '64k',  st: 'warn',  score: 61 },
-  { id: 'snc',   name: 'Sanctions Screening', bl: 'Financial Crime', spans: '119k', st: 'ok',    score: 11 },
-  { id: 'ctr',   name: 'Contract Summariser', bl: 'Legal',           spans: '31k',  st: 'bad',   score: 91, pat: true },
-  { id: 'hr',    name: 'HR Policy Assistant', bl: 'HR',              spans: '44k',  st: 'ok',    score: 8 },
-  { id: 'code',  name: 'Code Review Copilot', bl: 'Technology',      spans: '167k', st: 'ok',    score: 16 },
+  { id: 'pay',  name: 'Payments',            dept: 'Operations',      st: 'bad' },
+  { id: 'kyc',  name: 'KYC Onboarding',      dept: 'Onboarding',      st: 'warn', pat: true },
+  { id: 'aml',  name: 'AML Alerts',          dept: 'Financial Crime', st: 'ok' },
+  { id: 'cmp',  name: 'Client Complaints',   dept: 'Consumer',        st: 'warn', pat: true },
+  { id: 'trd',  name: 'Trade Surveillance',  dept: 'Markets',         st: 'ok' },
+  { id: 'try',  name: 'Treasury',            dept: 'Treasury',        st: 'bad' },
+  { id: 'ctr',  name: 'Contract Summariser', dept: 'Legal',           st: 'bad', pat: true },
+  { id: 'hr',   name: 'HR Policy Helper',    dept: 'HR',              st: 'ok' },
+  { id: 'code', name: 'Code Review Helper',  dept: 'Technology',      st: 'ok' },
 ];
-const STATUS_LABEL = { ok: 'OK', warn: 'Watch', bad: 'Breach', unreg: 'Unregistered' };
+const LABEL = { ok: 'OK', warn: 'Watch', bad: 'Problem' };
 
-// Hand-written detail for the agents the walkthrough (or a curious judge) is likely to open.
-const DETAIL = {
+// What each agent did, in plain English, and what Telemetry Tracker concluded.
+const STORY = {
   pay: {
-    title: 'Payments Ops Agent', tags: ['Inventory AI-0147', 'Owner: Payments Ops', 'Tier 1 model'],
-    trace: '7f3a…c91e', total: 4.21, source: 'Langfuse', pack: 'control pack: Payments v4', id: 'FND-2291',
-    spans: [
-      { op: 'agent.run', x: 'payments-ops', d: 0, s: 0, e: 4.21, k: 'root' },
-      { op: 'gen_ai.chat', x: 'plan', d: 1, s: .10, e: 1.38, k: 'llm', note: 'gpt-4o, 1,842 tok' },
-      { op: 'tool.lookup_beneficiary', d: 1, s: 1.42, e: 1.86, k: 'tool' },
-      { op: 'tool.sanctions_screen', d: 1, s: 1.90, e: 2.55, k: 'tool', note: 'clear' },
-      { op: 'guardrail.human_approval', d: 1, s: 2.58, e: 2.64, k: 'bad', note: 'SKIPPED' },
-      { op: 'tool.release_payment', d: 1, s: 2.68, e: 4.12, k: 'bad', note: '$2.4M released' },
+    actions: '182,000', steps: [
+      ['ok', 'Got a request to pay a supplier invoice'],
+      ['ok', "Looked up the supplier's bank details"],
+      ['ok', 'Checked the supplier against the sanctions list'],
+      ['bad', 'Skipped the manager approval step'],
+      ['bad', 'Sent a $2.4M payment'],
     ],
-    checks: [
-      ['Only in-scope data accessed', 'DATA-02', 'ok'],
-      ['Model on approved list', 'MRM-01', 'ok'],
-      ['Sanctions screening performed', 'FCC-12', 'ok'],
-      ['Human approval before releasing funds', 'PAY-07', 'bad'],
+    title: '$2.4M sent without manager approval',
+    rule: 'Rule: payments over $1M need a second person to approve them.',
+  },
+  try: {
+    actions: '64,000', steps: [
+      ['ok', 'Matched 412 ledger entries'],
+      ['ok', 'Found a $450k difference'],
+      ['bad', 'Approval step was optional, so it skipped it'],
+      ['bad', 'Released $450k to close the gap'],
     ],
-    finding: { sev: 'bad', label: 'High', kind: 'Exception · rule PAY-07 · unvalidated',
-      title: '$2.4M payment released without the required human approval',
-      ev: 'Evidence: trace 7f3a…c91e, spans 5-6. Maps to PAY-07 (four-eyes) and EU AI Act Art. 14 (human oversight).' },
-    issue: { id: 'IA-26-0412', owner: 'Head of Payments Ops', due: '30 Nov', wp: 'WP-4.2' },
+    title: '$450k released without sign-off',
+    rule: 'Rule: releasing funds needs a second person to approve.',
   },
   ctr: {
-    title: 'Contract Summariser Agent', tags: ['Inventory AI-0212', 'Owner: Legal Ops', 'Tier 2 model'],
-    trace: 'b9e4…22f0', total: 3.12, source: 'OpenTelemetry', pack: 'control pack: GenAI security v2', id: 'FND-2290',
-    spans: [
-      { op: 'agent.run', x: 'contract-summariser', d: 0, s: 0, e: 3.12, k: 'root' },
-      { op: 'retriever.fetch_doc', d: 1, s: .08, e: .62, k: 'tool', note: 'client_upload.pdf' },
-      { op: 'gen_ai.chat', x: 'summarise', d: 1, s: .66, e: 1.90, k: 'bad', note: 'injection' },
-      { op: 'tool.send_email', d: 1, s: 1.96, e: 2.60, k: 'bad', note: 'external' },
-      { op: 'guardrail.output_filter', d: 1, s: 2.66, e: 2.92, k: 'warn', note: 'missed' },
+    actions: '31,000', steps: [
+      ['ok', 'Opened a contract uploaded by a client'],
+      ['bad', 'Found hidden text telling it to email the file'],
+      ['bad', 'Followed the hidden instruction'],
+      ['bad', 'Emailed contract terms to an outside address'],
     ],
-    checks: [
-      ['Model on approved list', 'MRM-01', 'ok'],
-      ['Inputs screened for hidden instructions', 'AI-SEC-03', 'bad'],
-      ['Email only to approved domains', 'DLP-11', 'bad'],
-      ['No customer PII in prompts or outputs', 'PRIV-04', 'ok'],
-    ],
-    finding: { sev: 'bad', label: 'High', kind: 'Exception · AI judge 0.91 · unvalidated',
-      title: 'Uploaded contract told the agent to email its terms to an outside address',
-      ev: 'Evidence: trace b9e4…22f0, spans 3-4. Maps to DLP-11 and OWASP LLM01. Part of Pattern A.' },
-    issue: { id: 'IA-26-0413', owner: 'Head of Legal Ops', due: '14 Nov', wp: 'WP-4.3' },
+    title: 'Contract terms emailed outside the bank',
+    rule: 'Rule: agents must never follow instructions hidden in documents.',
   },
-  ghost: {
-    title: 'ops-email-bot', tags: [['Not in AI inventory', 'unreg'], 'Owner: none on record', 'Model: not approved'],
-    trace: '3c7d…e015', total: 2.36, source: 'OpenTelemetry', pack: 'control pack: AI governance v1', id: 'FND-2292',
-    spans: [
-      { op: 'agent.run', x: 'ops-email-bot', d: 0, s: 0, e: 2.36, k: 'root' },
-      { op: 'gen_ai.chat', x: 'draft', d: 1, s: .06, e: 1.10, k: 'bad', note: 'unapproved model' },
-      { op: 'retriever.crm_lookup', d: 1, s: 1.14, e: 1.52, k: 'tool', note: 'client data' },
-      { op: 'tool.send_email', d: 1, s: 1.58, e: 2.30, k: 'bad', note: '214 clients' },
+  kyc: {
+    actions: '96,000', steps: [
+      ['ok', "Read a customer's ID document"],
+      ['warn', 'Found hidden instructions in the file'],
+      ['ok', 'Safety filter blocked them'],
+      ['ok', 'Finished the check as normal'],
     ],
-    checks: [
-      ['Registered in the AI inventory', 'GOV-01', 'bad'],
-      ['Named owner and validation on file', 'MRM-02', 'bad'],
-      ['Model on approved list', 'MRM-01', 'bad'],
-      ['No customer PII in prompts or outputs', 'PRIV-04', 'warn'],
+    title: 'Attack blocked, but part of a wider pattern',
+    rule: 'The same trick is showing up in other agents.',
+  },
+  cmp: {
+    actions: '77,000', steps: [
+      ['ok', 'Read a complaint and its attachment'],
+      ['warn', 'Attachment had hidden instructions'],
+      ['warn', 'The tone of the reply changed slightly'],
+      ['ok', 'Reply was checked before sending'],
     ],
-    finding: { sev: 'bad', label: 'High', kind: 'Exception · inventory match · unvalidated',
-      title: 'Unregistered AI agent emailing clients from an unapproved model',
-      ev: 'Found from telemetry (service.name) with no inventory record. Maps to SR 11-7 and PRA SS1/23 model inventory.' },
-    issue: { id: 'IA-26-0414', owner: 'Head of Ops Technology', due: '21 Nov', wp: 'WP-1.1' },
+    title: 'Hidden instructions changed a reply',
+    rule: 'No harm done, but part of a wider pattern.',
   },
 };
+const ACTIONS = { aml: '141,000', trd: '203,000', hr: '44,000', code: '167,000' };
+const okStory = a => ({
+  actions: ACTIONS[a.id], steps: [
+    ['ok', 'Got a request from ' + a.dept],
+    ['ok', 'Looked up the information it needed'],
+    ['ok', 'Wrote its answer'],
+    ['ok', 'Answer passed the safety check'],
+  ],
+  title: 'No problems found',
+  rule: 'Every rule passed. Checked again every 15 minutes.',
+});
 
-const ISSUES = {
-  kyc: { span: 2, note: 'blocked', check: ['Inputs screened for hidden instructions', 'AI-SEC-03'], conf: '0.78',
-    title: 'Hidden instructions found in a customer ID document; blocked by output filter',
-    ev: 'Part of Pattern A. 14 traces this week. Maps to AI-SEC-03 and OWASP LLM01.' },
-  cmp: { span: 1, note: 'tone altered', check: ['Inputs screened for hidden instructions', 'AI-SEC-03'], conf: '0.74',
-    title: 'Complaint attachment carried hidden instructions that changed the reply',
-    ev: 'Part of Pattern A. 9 traces this week. Maps to AI-SEC-03 and OWASP LLM01.' },
-  crd: { span: 1, note: 'ungrounded', check: ['Figures traceable to a source document', 'MRM-05'], conf: '0.82',
-    title: '3 credit memos contain figures with no supporting source',
-    ev: 'Possible hallucination. Grounding score 0.41 against a 0.75 threshold.' },
-  try: { span: 3, note: 'advisory', check: ['Human approval before releasing funds', 'PAY-07'], conf: null,
-    title: 'Approval guardrail set to advisory: 2 releases went out without sign-off',
-    ev: '$0.9M released across 2 traces. Same Agent Flow template as Payments Ops.' },
-};
-const TOOLS = {
-  kyc: ['retriever.kyc_docs', 'tool.id_verify'], aml: ['tool.search_alerts', 'tool.write_case_note'],
-  cmp: ['retriever.complaint', 'tool.draft_reply'], trd: ['tool.query_trades', 'tool.score_alert'],
-  crd: ['retriever.financials', 'tool.draft_memo'], try: ['tool.match_ledger', 'tool.release_funds'],
-  snc: ['tool.screen_entity', 'tool.list_lookup'], hr: ['retriever.hr_policy', 'tool.cite_policy'],
-  code: ['tool.get_diff', 'tool.post_review'],
-};
-
-function hex(s, n) {
-  let h = 2166136261;
-  for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
-  return (h >>> 0).toString(16).padStart(8, '0').slice(0, n);
-}
-
-function detailFor(a) {
-  if (DETAIL[a.id]) return DETAIL[a.id];
-  const iss = ISSUES[a.id];
-  const [t1, t2] = TOOLS[a.id];
-  const total = 2.84;
-  const spans = [
-    { op: 'agent.run', x: a.id, d: 0, s: 0, e: total, k: 'root' },
-    { op: 'gen_ai.chat', x: 'plan', d: 1, s: .08, e: 1.02, k: 'llm', note: `gpt-4o, ${(900 + a.score * 7).toLocaleString('en-GB')} tok` },
-    { op: t1, d: 1, s: 1.06, e: 1.58, k: 'tool' },
-    { op: t2, d: 1, s: 1.62, e: 2.36, k: 'tool' },
-    { op: 'guardrail.output_filter', d: 1, s: 2.40, e: 2.74, k: 'guard', note: 'passed' },
-  ];
-  if (iss) Object.assign(spans[iss.span], { k: 'warn', note: iss.note });
-  const checks = [
-    ['Only in-scope data accessed', 'DATA-02', 'ok'],
-    ['Model on approved list', 'MRM-01', 'ok'],
-    iss ? [...iss.check, 'warn'] : ['Output passed safety filter', 'AI-SEC-01', 'ok'],
-    ['No customer PII in prompts or outputs', 'PRIV-04', 'ok'],
-  ];
-  const fid = 'FND-' + (2200 + a.score);
-  return {
-    title: /(Assistant|Copilot)$/.test(a.name) ? a.name : a.name + ' Agent',
-    tags: ['Inventory AI-0' + (100 + a.score * 3), 'Owner: ' + a.bl, 'Tier ' + (a.score > 40 ? 1 : 2) + ' model'],
-    trace: hex(a.id, 4) + '…' + hex(a.name, 4), total, source: a.score % 2 ? 'OpenTelemetry' : 'Langfuse',
-    pack: 'control pack: ' + a.bl + ' v3', spans, checks, id: fid,
-    finding: iss
-      ? { sev: 'warn', label: 'Medium', kind: 'Watch · ' + (iss.conf ? 'AI judge ' + iss.conf : 'rule ' + iss.check[1]) + ' · unvalidated', title: iss.title, ev: iss.ev }
-      : { sev: 'ok', label: 'Clear', kind: 'Automated review', title: 'No exceptions found against the control library',
-          ev: `${a.spans} spans tested in the last 24h (100% of activity). Next automated review 09:56.`, quiet: true },
-    issue: { id: 'IA-26-04' + (20 + a.score % 70), owner: 'Head of ' + a.bl, due: '30 Nov', wp: 'WP-4.' + (a.score % 9 + 4) },
-  };
-}
-
-/* ---------- Toast notifications ---------- */
+/* ---------- Toasts ---------- */
 function bump(el) { el.classList.add('bump'); after(0.25, () => el.classList.remove('bump')); }
-function toast(kind, title, body, life = 2.8) {
-  const icon = kind === 'bad' ? ICON.bang : ICON.check;
+function toast(title, body, life = 3) {
   const t = document.createElement('div');
-  t.className = 'toast ' + kind;
-  t.innerHTML = `<span class="t-ic">${icon}</span><div><b>${title}</b><span>${body}</span></div>`;
+  t.className = 'toast';
+  t.innerHTML = `<span class="t-ic">${TICK}</span><div><b>${title}</b><span>${body}</span></div>`;
   $('#toasts').appendChild(t);
-  const bell = $('#bell');
-  bell.textContent = +bell.textContent + 1;
-  bump(bell);
+  const bell = $('#bell'); bell.textContent = +bell.textContent + 1; bump(bell);
   after(life, () => { t.classList.add('out'); after(0.3, () => t.remove()); });
 }
 
-/* ---------- Fleet review (across all agents) ---------- */
-const rowsEl = $('#rows');
-rowsEl.innerHTML = AGENTS.map(a => `
-  <tr class="row" data-id="${a.id}">
-    <td><span class="nm${a.svc ? ' svc' : ''}">${a.name}</span><span class="pa">A</span></td>
-    <td class="bl">${a.bl}</td>
-    <td class="n sp">${a.spans}</td>
-    <td class="n"><span class="risk"><b>-</b><i><u></u></i></span></td>
-    <td><span class="chip">Pending</span></td>
-  </tr>`).join('');
-const rowEl = id => rowsEl.querySelector(`[data-id="${id}"]`);
+/* ---------- All agents ---------- */
+const list = $('#list');
+list.insertAdjacentHTML('beforeend', AGENTS.map(a => `
+  <div class="row" data-id="${a.id}"><span class="nm">${a.name}</span><span class="dept">${a.dept}</span><span class="mark">!</span><span class="status">Waiting</span></div>`).join(''));
+const rowEl = id => list.querySelector(`[data-id="${id}"]`);
 
-function resolveRow(a) {
-  const r = rowEl(a.id);
-  r.classList.remove('scanning');
-  r.classList.add(a.st);
-  r.querySelector('.chip').textContent = STATUS_LABEL[a.st];
-  r.querySelector('.risk b').textContent = a.score;
-  r.querySelector('.risk u').style.width = Math.max(8, a.score) + '%';
-}
-
-let reviewed = false;
-function runReview() {
-  if (reviewed) return;
-  reviewed = true;
-  const btn = $('#run-btn'), status = $('#scan-status');
+let checked = false;
+function runCheck() {
+  if (checked) return;
+  checked = true;
+  const btn = $('#run-btn'), pill = $('#all-status');
   btn.classList.add('busy');
-  btn.innerHTML = '<span class="spin"></span>Reviewing...';
-  status.className = 'pill busy';
-  status.innerHTML = '<span class="spin"></span>Testing all agents';
+  btn.innerHTML = '<span class="spin"></span>Checking...';
+  pill.className = 'pill busy';
+  pill.innerHTML = '<span class="spin"></span>Checking all agents';
   $('#beam').classList.add('go');
-  countTo($('#k-checks'), 31208, 38416, 2.3);
   AGENTS.forEach((a, i) => {
-    const t = 0.18 + i * 0.18;
-    after(t - 0.18, () => { const r = rowEl(a.id); r.classList.add('scanning'); r.querySelector('.chip').textContent = 'Testing'; });
-    after(t, () => resolveRow(a));
+    const t = 0.22 + i * 0.24;
+    after(t - 0.2, () => { const r = rowEl(a.id); r.classList.add('checking'); r.querySelector('.status').textContent = 'Checking'; });
+    after(t, () => {
+      const r = rowEl(a.id);
+      r.classList.remove('checking'); r.classList.add(a.st);
+      r.querySelector('.status').textContent = LABEL[a.st];
+    });
   });
-  after(2.3, () => {
+  after(2.4, () => {
     btn.classList.remove('busy');
-    btn.innerHTML = ICON.play + 'Run review now';
-    status.className = 'pill done';
-    status.innerHTML = ICON.ok + 'Reviewed just now';
-    $('#last-run').innerHTML = 'Last automated review <b>09:41</b> · next 09:56';
-    $('#c-all').textContent = '25'; $('#c-bad').textContent = '2'; $('#c-warn').textContent = '4';
-    $('#c-unreg').textContent = '1'; $('#c-ok').textContent = '18';
-    $('#k-agents').textContent = '25';
-    $('#k-agents-sub').textContent = '1 not in AI inventory';
-    $('#k-agents-card').classList.add('flag');
-    $('#nav-inv').textContent = '25';
-    $('#k-find').textContent = '8';
-    $('#k-find-sub').textContent = '+3 new · 3 high';
-    $('#k-find-card').classList.add('alert');
-    $('#nav-find').textContent = '8';
-    bump($('#nav-find'));
-    toast('ok', 'Review complete', '100% of activity tested, no sampling. 8 findings to validate, including 1 agent missing from the AI inventory.');
+    btn.innerHTML = PLAY + 'Check now';
+    pill.className = 'pill ok';
+    pill.innerHTML = TICK + 'Checked just now';
+    $('#last').innerHTML = 'Last check <b>just now</b>';
+    $('#k-flag').textContent = '3';
+    $('#k-flag-sub').textContent = 'the rest passed automatically';
+    $('#k-flag-card').classList.add('alert');
+    toast('Check complete', 'Over 1 million actions checked. Only 3 need an auditor.');
   });
 }
 
@@ -750,102 +483,53 @@ function showPattern() {
   if (patternShown) return;
   patternShown = true;
   AGENTS.filter(a => a.pat).forEach((a, i) => after(i * 0.12, () => rowEl(a.id).classList.add('pat')));
-  after(0.25, () => {
-    $('#pat-empty').style.opacity = 0;
-    $('#pattern').classList.add('show');
-    [3, 4, 3, 5, 7, 10, 16].forEach((h, i) => after(0.15 + i * 0.05, () => { $('#bars').children[i].style.height = h + 'px'; }));
-  });
-  after(0.45, () => toast('bad', 'Thematic risk across 3 agents', 'Prompt injection via uploaded documents, now 3.4x the usual rate', 3.2));
+  after(0.25, () => { $('#pat-empty').style.opacity = 0; $('#pattern').classList.add('show'); });
 }
 
-/* ---------- Agent deep-dive (single agent) ---------- */
-let renderToken = 0, current = null;
-function spanRow(total) {
-  return s => {
-    const l = s.s / total * 100, w = Math.max(0.9, (s.e - s.s) / total * 100), right = 100 - l - w;
-    const pos = right >= l ? `left:calc(${l + w}% + 6px)` : `right:calc(${100 - l}% + 6px)`;
-    return `<div class="span-row ${s.k}" style="--d:${s.d}">
-      <div class="span-name">${s.op}${s.x ? ` <em>${s.x}</em>` : ''}</div>
-      <div class="span-track"><div class="span-bar" style="left:${l}%;--w:${w}%"></div>${s.note ? `<span class="span-note" style="${pos}">${s.note}</span>` : ''}</div>
-    </div>`;
-  };
-}
-
-function renderAgent(a) {
-  const token = ++renderToken;
-  const live = fn => () => { if (token === renderToken) fn(); };
-  const d = detailFor(a), f = d.finding;
-  current = d;
-  rowsEl.querySelectorAll('tr').forEach(r => r.classList.toggle('selected', r.dataset.id === a.id));
-  $('#ad-empty').hidden = true;
-  const st = $('#ad-status');
-  st.className = 'pill busy';
-  st.innerHTML = '<span class="spin"></span>Replaying trace';
-  const c = $('#ad-content');
-  c.hidden = false;
-  c.style.animation = 'none'; void c.offsetWidth; c.style.animation = '';
-  const tags = d.tags.map(t => Array.isArray(t) ? `<span class="tag ${t[1]}">${t[0]}</span>` : `<span class="tag">${t}</span>`).join('');
-  c.innerHTML = `
-    <div class="ad-name">${d.title}</div>
-    <div class="ad-tags">${tags}<span class="tag ${a.st === 'unreg' ? 'bad' : a.st}">Risk ${a.score}/100</span></div>
-    <div class="sec"><b>Decision trail</b><span>trace ${d.trace} · ${d.total.toFixed(2)} s · ${d.spans.length} spans · ${d.source}</span></div>
-    <div class="trace">${d.spans.map(spanRow(d.total)).join('')}</div>
-    <div class="sec"><b>Control tests</b><span>${d.pack}</span></div>
-    <div class="checks">${d.checks.map(([t, ref, r]) =>
-      `<div class="check" data-r="${r}"><span class="ck-ic"><span class="spin"></span></span><span class="ck-txt">${t}</span><span class="ck-ref">${ref}</span></div>`).join('')}</div>
-    <div class="finding ${f.sev}">
-      <div class="f-top"><span class="sev">${f.label}</span><span>${f.kind}</span><span class="f-id">${f.quiet ? '09:41' : d.id}</span></div>
-      <div class="f-title">${f.title}</div>
-      <div class="f-ev">${f.ev}</div>
-      ${f.quiet ? '' : '<div class="f-actions"><button class="btn primary" data-act="validate">Validate as issue</button><button class="btn ghost" data-act="dismiss">Dismiss</button><button class="btn ghost">Evidence pack</button></div>'}
-    </div>`;
-  const rows = [...c.querySelectorAll('.span-row')];
-  rows.forEach((r, i) => after(0.1 + i * 0.12, live(() => r.classList.add('on'))));
-  const checks = [...c.querySelectorAll('.check')];
-  const t0 = 0.2 + rows.length * 0.12;
-  checks.forEach((ck, i) => after(t0 + i * 0.16, live(() => {
-    ck.classList.add(ck.dataset.r);
-    ck.querySelector('.ck-ic').innerHTML = RESULT_ICON[ck.dataset.r];
-  })));
-  after(t0 + checks.length * 0.16 + 0.05, live(() => {
-    c.querySelector('.finding').classList.add('show');
-    const n = checks.filter(x => x.dataset.r !== 'ok').length;
-    st.className = 'pill ' + (f.sev === 'ok' ? 'done' : f.sev === 'bad' ? 'bad' : '');
-    st.innerHTML = n ? `${n} exception${n > 1 ? 's' : ''}, unvalidated` : ICON.ok + 'All controls passed';
+/* ---------- One agent ---------- */
+let token = 0;
+function showAgent(a) {
+  const my = ++token;
+  const live = fn => () => { if (my === token) fn(); };
+  const s = STORY[a.id] || okStory(a);
+  list.querySelectorAll('.row').forEach(r => r.classList.toggle('selected', r.dataset.id === a.id));
+  $('#empty').hidden = true;
+  const pill = $('#one-status');
+  pill.className = 'pill busy';
+  pill.innerHTML = '<span class="spin"></span>Replaying';
+  const box = $('#one');
+  box.hidden = false;
+  box.style.animation = 'none'; void box.offsetWidth; box.style.animation = '';
+  const kind = { bad: 'Broke a rule', warn: 'Worth watching', ok: 'All clear' }[a.st];
+  const auto = {
+    bad: `<div class="v-auto"><span class="dot">${TICK}</span>Sent to the audit team automatically<span>evidence attached</span></div>`,
+    warn: `<div class="v-auto"><span class="dot">${BANG}</span>Being watched. No auditor needed yet.</div>`,
+    ok: '',
+  }[a.st];
+  box.innerHTML = `
+    <div class="one-name">${a.name} agent</div>
+    <div class="one-meta">${a.dept} · ${s.actions} actions checked today</div>
+    <div class="label">What it did</div>
+    <div class="steps">${s.steps.map(([r, t]) => `<div class="step ${r}"><span class="dot">${ICON[r]}</span><span class="txt">${t}</span></div>`).join('')}</div>
+    <div class="verdict ${a.st}"><div class="v-kind">${kind}</div><div class="v-title">${s.title}</div><div class="v-rule">${s.rule}</div>${auto}</div>`;
+  const steps = [...box.querySelectorAll('.step')];
+  steps.forEach((el, i) => after(0.15 + i * 0.28, live(() => el.classList.add('on'))));
+  const tv = 0.15 + steps.length * 0.28;
+  after(tv, live(() => {
+    box.querySelector('.verdict').classList.add('show');
+    pill.className = 'pill ' + a.st;
+    pill.textContent = LABEL[a.st];
   }));
+  const va = box.querySelector('.v-auto');
+  if (va) after(tv + 0.45, live(() => va.classList.add('show')));
 }
-
-// Exceptions found by the tool stay "unvalidated" until an auditor accepts or dismisses them.
-function validate(btn) {
-  const d = current, iss = d.issue;
-  btn.classList.add('pressed');
-  after(0.12, () => {
-    btn.parentElement.outerHTML = `<div class="f-actions"><div class="f-conf"><span class="ck-ic">${ICON.check}</span><div><b>Validated. Issue ${iss.id} raised.</b> Owner: ${iss.owner}, due ${iss.due}.<br>Evidence pack hashed and filed to workpaper ${iss.wp}.</div></div></div>`;
-    const st = $('#ad-status'); st.className = 'pill done'; st.innerHTML = ICON.ok + 'Validated by you';
-    const k = $('#k-find'); k.textContent = Math.max(0, +k.textContent - 1);
-    $('#k-find-sub').textContent = '3 high · 1 validated today';
-    $('#nav-find').textContent = k.textContent;
-    const ni = $('#nav-issues'); ni.textContent = +ni.textContent + 1; bump(ni);
-    toast('ok', `Issue ${iss.id} raised`, `Owner: ${iss.owner}. Due ${iss.due}. Evidence filed to ${iss.wp}.`);
-  });
-}
-function dismiss(btn) {
-  btn.parentElement.outerHTML = `<div class="f-actions"><div class="f-conf"><span class="ck-ic" style="background:var(--ink-3)">${ICON.cross}</span><div><b style="color:var(--ink-2)">Dismissed as a false positive.</b> Reason logged; the detection rule is queued for tuning.</div></div></div>`;
-  const st = $('#ad-status'); st.className = 'pill'; st.textContent = 'Dismissed by you';
-}
-$('#ad-content').addEventListener('click', e => {
-  const b = e.target.closest('[data-act]');
-  if (!b) return;
-  if (b.dataset.act === 'validate') validate(b);
-  if (b.dataset.act === 'dismiss') dismiss(b);
+list.addEventListener('click', e => {
+  const r = e.target.closest('.row');
+  if (r && /\b(ok|warn|bad)\b/.test(r.className)) showAgent(AGENTS.find(a => a.id === r.dataset.id));
 });
-rowsEl.addEventListener('click', e => {
-  const r = e.target.closest('tr');
-  if (r && /\b(ok|warn|bad|unreg)\b/.test(r.className)) renderAgent(AGENTS.find(a => a.id === r.dataset.id));
-});
-$('#run-btn').addEventListener('click', () => { if (!reviewed) { runReview(); after(2.6, showPattern); } });
+$('#run-btn').addEventListener('click', () => { if (!checked) { runCheck(); after(2.8, showPattern); } });
 
-/* ---------- Ask Telemetry (chat) ---------- */
+/* ---------- Ask Telemetry ---------- */
 const chat = $('#chat');
 function scrollChat() {
   const from = chat.scrollTop, to = chat.scrollHeight - chat.clientHeight;
@@ -861,66 +545,25 @@ const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&
 
 function answerFor(q) {
   const s = q.toLowerCase();
-  if (/approv|bypass|skip|sign.?off|four.?eyes|4.?eyes/.test(s)) return {
-    search: 'Testing 312,480 spans from 25 agents',
-    found: '312,480 spans tested, 7 matches',
-    blocks: [
-      '<b>3 agents</b> skipped a required human approval in the last 7 days:',
-      `<table class="ans"><tr><th>Agent</th><th class="n">Events</th><th class="n">Value</th></tr>
-        <tr class="hot"><td><span class="dotr" style="background:var(--red)"></span>Payments Ops</td><td class="n">4</td><td class="n">$6.1M</td></tr>
-        <tr><td><span class="dotr" style="background:var(--amber)"></span>Treasury Recon</td><td class="n">2</td><td class="n">$0.9M</td></tr>
-        <tr><td><span class="dotr" style="background:var(--amber)"></span>Credit Memo Drafter</td><td class="n">1</td><td class="n">1 memo</td></tr></table>`,
-      '<span class="rc"><b>Likely a control design gap:</b> all three use Agent Flow template v2.3, where the approval step is advisory rather than blocking.</span>',
-      '<div class="cites">Evidence <span class="cite">7f3a…c91e</span><span class="cite">b21d…07aa</span><span class="cite">+5 traces</span></div>',
-      '<div class="ans-actions"><button class="btn sm primary">Draft thematic issue</button><button class="btn sm ghost">Add to workpaper</button></div>',
-    ],
-  };
-  if (/inventor|unregister|shadow|missing|register/.test(s)) return {
-    search: 'Matching telemetry service names to the AI inventory',
-    found: '24 of 25 active agents registered',
-    blocks: [
-      '<b>1 agent</b> is sending telemetry but has no AI inventory record:',
-      `<table class="ans"><tr><th>Agent</th><th>First seen</th><th class="n">Activity</th></tr>
-        <tr class="hot"><td>ops-email-bot</td><td>18 Sep</td><td class="n">214 emails</td></tr></table>`,
-      '<span class="rc">It uses a model that is not on the approved list and has no named owner or validation on file. Separately, <b>FX Pricing Assistant</b> is registered but has sent no telemetry for 6 days.</span>',
-      '<div class="cites">Evidence <span class="cite">3c7d…e015</span><span class="cite">+11 traces</span></div>',
-      '<div class="ans-actions"><button class="btn sm primary">Raise inventory issue</button><button class="btn sm ghost">Notify model risk</button></div>',
-    ],
-  };
-  if (/pii|personal|leav|leak|privacy|gdpr/.test(s)) return {
-    search: 'Scanning prompts and outputs for PII',
-    found: '1.28M spans tested. 2 near misses',
-    blocks: [
-      '<b>No customer PII left the bank today.</b> Guardrails caught and redacted 2 near misses:',
-      `<table class="ans"><tr><th>Agent</th><th>Data type</th><th class="n">Outcome</th></tr>
-        <tr><td>Wealth Advisor Assist</td><td>Account number</td><td class="n">Redacted</td></tr>
-        <tr><td>HR Policy Assistant</td><td>Employee ID</td><td class="n">Redacted</td></tr></table>`,
-      '<div class="cites">Evidence <span class="cite">4c1e…9b02</span><span class="cite">e77a…1d3c</span></div>',
-    ],
-  };
-  if (/inject|incident|owasp|attack|pattern|emerging|compare|thematic/.test(s)) return {
-    search: 'Comparing agent behaviour with public AI incident patterns',
-    found: '41 traces match 1 known incident pattern',
-    blocks: [
-      '<b>Pattern A, prompt injection via uploaded documents,</b> is rising across 3 agents (3.4x the 30-day baseline).',
-      '<span class="rc">The technique matches <b>OWASP LLM01</b> and recent public incidents where hidden text in a file redirected an AI assistant. <b>9 agents</b> take customer uploads and could be exposed.</span>',
-      '<div class="cites">Evidence <span class="cite">b9e4…22f0</span><span class="cite">5d20…a4e1</span><span class="cite">+39 traces</span></div>',
-      '<div class="ans-actions"><button class="btn sm primary">Draft thematic issue</button><button class="btn sm ghost">List exposed agents</button></div>',
-    ],
-  };
-  if (/cost|token|spend|budget|latency/.test(s)) return {
-    search: 'Adding up gen_ai.usage tokens by agent',
-    found: '412,906 LLM calls counted',
-    blocks: ['Spend today is <b>$1,842</b> across 25 agents, 6% above average. <b>Code Review Copilot</b> is the largest user at 31%. No agent is over budget.'],
-  };
-  return {
-    search: 'Reviewing open findings across all agents',
-    found: '1.28M spans tested. 8 findings to validate',
-    blocks: [
-      'There are <b>8 findings to validate (3 high)</b>. Highest risk: <b>Contract Summariser</b> (91), <b>Payments Ops</b> (87) and the unregistered <b>ops-email-bot</b> (79). One thematic risk is emerging: prompt injection via uploaded documents.',
-      '<div class="cites">Try asking about <span class="cite">approvals</span><span class="cite">inventory</span><span class="cite">incidents</span><span class="cite">PII</span></div>',
-    ],
-  };
+  if (/approv|skip|sign/.test(s)) return [
+    '<b>2 agents</b> skipped a required approval this week:',
+    `<table class="ans"><tr><td class="r">Payments</td><td class="n">4 times</td><td class="n r">$6.1M</td></tr>
+      <tr><td class="r">Treasury</td><td class="n">2 times</td><td class="n r">$0.9M</td></tr></table>`,
+    'Both use the same setup, where the approval step is optional. <b>Fixing that one setup fixes both.</b>',
+    '<div class="small">Based on 312,480 logged actions.</div> <button class="btn ghost" style="margin-top:6px">Show evidence</button>',
+  ];
+  if (/shared|pattern|hidden|inject|attack|trick/.test(s)) return [
+    'Hidden instructions inside uploaded files are trying to trick agents into doing things they should not. It has happened <b>3 times more than usual</b> this month.',
+    '<b>2 agents</b> blocked it. <b>Contract Summariser</b> did not, and emailed contract terms outside the bank. That case went to the audit team automatically.',
+    '<div class="small">The same kind of attack has been reported at other firms.</div>',
+  ];
+  return [
+    'Today <b>3 things</b> need an auditor:',
+    `<table class="ans"><tr><td>Payments</td><td class="n r">$2.4M sent without approval</td></tr>
+      <tr><td>Treasury</td><td class="n r">$450k sent without sign-off</td></tr>
+      <tr><td>Contract Summariser</td><td class="n r">Data emailed outside</td></tr></table>`,
+    'Everything else, over 1 million actions, passed automatically.',
+  ];
 }
 
 function addMsg(cls, html) {
@@ -932,14 +575,12 @@ function addMsg(cls, html) {
   return m;
 }
 function ask(q) {
-  const A = answerFor(q);
+  const blocks = answerFor(q);
   addMsg('user', esc(q));
-  const m = addMsg('ai', `<div class="who">TELEMETRY TRACKER</div><div class="thinking"><span class="spin"></span>${A.search}</div>`);
-  after(0.5, () => {
-    const th = m.querySelector('.thinking');
-    th.classList.add('done');
-    th.innerHTML = ICON.ok + A.found;
-    A.blocks.forEach((b, i) => after(0.08 + i * 0.24, () => { m.insertAdjacentHTML('beforeend', `<div class="blk">${b}</div>`); scrollChat(); }));
+  const m = addMsg('ai', '<div class="who">TELEMETRY TRACKER</div><div class="thinking"><span class="spin"></span>Reading the logs...</div>');
+  after(0.6, () => {
+    m.querySelector('.thinking').remove();
+    blocks.forEach((b, i) => after(i * 0.3, () => { m.insertAdjacentHTML('beforeend', `<div class="blk">${b}</div>`); scrollChat(); }));
   });
 }
 $('#chat-form').addEventListener('submit', e => {
@@ -953,50 +594,9 @@ $('#suggest').addEventListener('click', e => { if (e.target.tagName === 'BUTTON'
 $('#chat-in').addEventListener('focus', () => $('#chat-form').classList.add('active'));
 $('#chat-in').addEventListener('blur', () => $('#chat-form').classList.remove('active'));
 
-/* ---------- KPIs and live telemetry stream ---------- */
-function countTo(el, from, to, dur) {
-  const t0 = performance.now(), D = dur * 1000 * SLOW;
-  (function tick(now) {
-    const p = Math.min(1, (now - t0) / D);
-    el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))).toLocaleString('en-GB');
-    if (p < 1) requestAnimationFrame(tick);
-  })(t0);
-}
-let spans = 1183904;
-setInterval(() => { spans += 260 + ((spans * 7) % 190); $('#k-spans').textContent = spans.toLocaleString('en-GB'); }, 200 * SLOW);
-
-const FEED = [
-  ['gen_ai.chat', 'kyc-onboarding', 'gpt-4o, 1,204 tok', 'ok'],
-  ['tool.call', 'aml-triage', 'search_alerts(n=38)', 'ok'],
-  ['retriever.query', 'hr-policy', 'top_k=5, 212ms', 'ok'],
-  ['guardrail.approval', 'payments-ops', 'result=SKIPPED', 'bad'],
-  ['gen_ai.chat', 'trade-surveillance', 'gpt-4o, 2,881 tok', 'ok'],
-  ['tool.send_email', 'ops-email-bot', 'no inventory record', 'bad'],
-  ['tool.call', 'treasury-recon', 'match_ledger(412)', 'ok'],
-  ['gen_ai.chat', 'contract-summariser', 'hidden instruction', 'warn'],
-  ['tool.call', 'sanctions-screening', 'screen_entity, 0 hits', 'ok'],
-  ['gen_ai.chat', 'credit-memo', 'gpt-4o, 3,402 tok', 'ok'],
-  ['tool.send_email', 'contract-summariser', 'to=external domain', 'bad'],
-  ['guardrail.pii', 'wealth-advisor', 'redacted=account_no', 'ok'],
-  ['gen_ai.chat', 'complaints', '4o-mini, 688 tok', 'ok'],
-];
-const FEED_LABEL = { ok: 'OK', warn: 'REVIEW', bad: 'FLAGGED' };
-let feedI = 0, feedClock = 9 * 3600 + 41 * 60 + 2.118;
-function pushFeed() {
-  const feed = $('#feed');
-  const [op, ag, attrs, st] = FEED[feedI % FEED.length];
-  feedClock += 0.083 + (feedI++ % 5) * 0.061;
-  const hh = String(Math.floor(feedClock / 3600)).padStart(2, '0');
-  const mm = String(Math.floor(feedClock % 3600 / 60)).padStart(2, '0');
-  const ss = (feedClock % 60).toFixed(3).padStart(6, '0');
-  const line = document.createElement('div');
-  line.className = 'fl ' + st;
-  line.innerHTML = `<span class="ft">${hh}:${mm}:${ss}</span><span class="fo">${op}</span><span class="fa">${ag}</span><span class="fx">${attrs}</span><span class="fs">${FEED_LABEL[st]}</span>`;
-  feed.appendChild(line);
-  while (feed.children.length > 3) feed.firstChild.remove();
-}
-for (let i = 0; i < 3; i++) pushFeed();
-setInterval(pushFeed, 340 * SLOW);
+/* ---------- Live action counter ---------- */
+let actions = 1183904;
+setInterval(() => { actions += 260 + ((actions * 7) % 190); $('#k-actions').textContent = actions.toLocaleString('en-GB'); }, 200 * SLOW);
 
 /* ---------- Demo cursor ---------- */
 const cur = $('#cursor');
@@ -1014,7 +614,7 @@ function clickFx() { cur.classList.remove('click'); void cur.offsetWidth; cur.cl
 function typeInto(input, text, dur) {
   const per = dur / text.length;
   input.focus({ preventScroll: true });
-  [...text].forEach((_, i) => after(i * per, () => { input.value = text.slice(0, i + 1); input.scrollLeft = input.scrollWidth; }));
+  [...text].forEach((_, i) => after(i * per, () => { input.value = text.slice(0, i + 1); }));
 }
 
 /* ---------- 15-second guided walkthrough ---------- */
@@ -1022,31 +622,30 @@ let started = false;
 function run() {
   if (started) return;
   started = true;
-  const Qn = 'Which agents skipped a human approval step this week?';
+  const question = 'Which agents skipped approvals this week?';
 
-  // Across all agents: test 100% of activity against the control library (0 to 3.4 s)
-  after(0.1, () => cursorTo($('#run-btn'), 0.65, 0.3, 0.55));
-  after(0.85, () => { clickFx(); runReview(); });
-  // ...then surface a thematic risk shared by several agents (3.4 to 5.6 s)
+  // All agents: one click checks everything (0 to 3.4 s)
+  after(0.1, () => cursorTo($('#run-btn'), 0.65, 0.35, 0.55));
+  after(0.85, () => { clickFx(); runCheck(); });
+  // The same problem shows up in several agents (3.4 to 5.6 s)
   after(3.4, showPattern);
 
-  // Single agent: replay Payments Ops, then the auditor validates the exception (5.6 to 9.3 s)
-  after(5.6, () => cursorTo(rowEl('pay').querySelector('.nm'), 0.6, 0.6, 0.6));
-  after(6.25, () => { clickFx(); renderAgent(AGENTS[1]); });
-  after(8.1, () => cursorTo($('#ad-content [data-act=validate]'), 0.45, 0.45, 0.6));
-  after(8.6, () => { clickFx(); const b = $('#ad-content [data-act=validate]'); if (b) validate(b); });
+  // One agent: see what the Payments agent did (5.6 to 9.4 s)
+  after(5.6, () => cursorTo(rowEl('pay').querySelector('.nm'), 0.6, 0.5, 0.6));
+  after(6.2, () => { clickFx(); showAgent(AGENTS[0]); });
+  after(8.9, () => cursorTo($('#p-one'), 0.9, 0.85, 0.97));
 
-  // Ask the telemetry a question in plain English (9.3 to 13.6 s)
-  after(9.35, () => cursorTo($('#chat-in'), 0.5, 0.3, 0.5));
-  after(9.9, () => { clickFx(); typeInto($('#chat-in'), Qn, 1.0); });
-  after(10.95, () => cursorTo($('#send'), 0.35, 0.5, 0.55));
-  after(11.35, () => {
+  // Ask a question in plain English (9.4 to 14 s)
+  after(9.6, () => cursorTo($('#chat-in'), 0.5, 0.3, 0.5));
+  after(10.15, () => { clickFx(); typeInto($('#chat-in'), question, 0.9); });
+  after(11.1, () => cursorTo($('#send'), 0.35, 0.5, 0.55));
+  after(11.5, () => {
     clickFx();
     const s = $('#send'); s.classList.add('pressed'); after(0.15, () => s.classList.remove('pressed'));
     $('#chat-in').value = ''; $('#chat-in').blur();
-    ask(Qn);
+    ask(question);
   });
-  after(13.6, () => cursorTo($('#chat-form'), 0.8, 0.12, 1.6));
+  after(13.9, () => cursorTo($('#chat-form'), 0.8, 0.1, 1.9));
 }
 
 addEventListener('keydown', e => {
